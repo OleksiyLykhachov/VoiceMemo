@@ -1,4 +1,4 @@
-package com.example.voice_memos
+package com.oleksiilykhachov.voicememo
 
 import io.flutter.embedding.android.FlutterActivity
 
