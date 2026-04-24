@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../bloc/recorder_bloc/recorder_bloc.dart';
 import '../record_pannel/record_pannel.dart';
 import 'recorder_background.dart';
+import 'recorder_overlay_content.dart';
 
 class RecorderOverlay extends StatefulWidget {
   final Widget child;
@@ -60,6 +61,14 @@ class _RecorderOverlayState extends State<RecorderOverlay>
             child: IgnorePointer(
               ignoring: true,
               child: RecorderBackground(
+                controller: _controller,
+              ),
+            ),
+          ),
+          Positioned.fill(
+            child: IgnorePointer(
+              ignoring: true,
+              child: RecorderOverlayContent(
                 controller: _controller,
               ),
             ),
