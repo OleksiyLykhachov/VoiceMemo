@@ -1,14 +1,21 @@
 PODS:
+  - audio_session (0.0.1):
+    - Flutter
   - Flutter (1.0.0)
-  - ObjectBox (4.4.1)
+  - just_audio (0.0.1):
+    - Flutter
+    - FlutterMacOS
+  - ObjectBox (5.3.0-beta.4)
   - objectbox_flutter_libs (0.0.1):
     - Flutter
-    - ObjectBox (= 4.4.1)
+    - ObjectBox (= 5.3.0-beta.4)
   - record_ios (1.2.0):
     - Flutter
 
 DEPENDENCIES:
+  - audio_session (from `.symlinks/plugins/audio_session/ios`)
   - Flutter (from `Flutter`)
+  - just_audio (from `.symlinks/plugins/just_audio/darwin`)
   - objectbox_flutter_libs (from `.symlinks/plugins/objectbox_flutter_libs/ios`)
   - record_ios (from `.symlinks/plugins/record_ios/ios`)
 
@@ -17,19 +24,25 @@ SPEC REPOS:
     - ObjectBox
 
 EXTERNAL SOURCES:
+  audio_session:
+    :path: ".symlinks/plugins/audio_session/ios"
   Flutter:
     :path: Flutter
+  just_audio:
+    :path: ".symlinks/plugins/just_audio/darwin"
   objectbox_flutter_libs:
     :path: ".symlinks/plugins/objectbox_flutter_libs/ios"
   record_ios:
     :path: ".symlinks/plugins/record_ios/ios"
 
 SPEC CHECKSUMS:
+  audio_session: 9bb7f6c970f21241b19f5a3658097ae459681ba0
   Flutter: cabc95a1d2626b1b06e7179b784ebcf0c0cde467
-  ObjectBox: 7da4aceb5013d041bfafdbc6d744a26918b09757
-  objectbox_flutter_libs: 09b1dec1b4cd27bf1a5f9bae7ccaa7e43588bf31
+  just_audio: 4e391f57b79cad2b0674030a00453ca5ce817eed
+  ObjectBox: eccb95ea2054c39d81dfa2d4ccc5f1e31187228a
+  objectbox_flutter_libs: ed1510f71602e4a0d3f2a721324e468d066fdbb9
   record_ios: 412daca2350b228e698fffcd08f1f94ceb1e3844
 
-PODFILE CHECKSUM: 3c63482e143d1b91d2d2560aee9fb04ecc74ac7e
+PODFILE CHECKSUM: f1e9c6387adf459c57965b8a0e73f92116d81277
 
 COCOAPODS: 1.16.2
