@@ -16,7 +16,9 @@ class ObjectBoxRecordsRepository implements RecordsRepository {
 
   @override
   Future<void> delete(int id) async {
-    final query = _recordsBox.query(RecordModel_.objectBoxId.equals(id)).build();
+    final query = _recordsBox
+        .query(RecordModel_.objectBoxId.equals(id))
+        .build();
     final record = query.findFirst();
     query.close();
 
@@ -34,8 +36,16 @@ class ObjectBoxRecordsRepository implements RecordsRepository {
   }
 
   @override
-  Future<void> save(Record record) async {
-    _recordsBox.put(RecordModel.fromEntity(record));
+  Future<Record?> getRecordById(int id) async {
+    final record = _recordsBox.get(id);
+    return record?.toEntity();
+  }
+
+  @override
+  Future<Record> save(Record record) async {
+    final id = _recordsBox.put(RecordModel.fromEntity(record));
+
+    return record.copyWith(id: id);
   }
 
   @override
