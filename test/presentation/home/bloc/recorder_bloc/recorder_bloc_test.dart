@@ -1,0 +1,148 @@
+import 'dart:io';
+import 'dart:typed_data';
+
+import 'package:bloc_test/bloc_test.dart';
+import 'package:flutter_test/flutter_test.dart';
+import 'package:mocktail/mocktail.dart';
+import 'package:voice_memos/presentation/home/bloc/recorder_bloc/recorder_bloc.dart';
+import 'package:voice_memos/utils/recorder_service/recorder_serivce.dart';
+
+class _MockRecorderService extends Mock implements RecorderService {}
+
+void main() {
+  late _MockRecorderService recorderService;
+
+  setUp(() {
+    recorderService = _MockRecorderService();
+    when(() => recorderService.dispose()).thenAnswer((_) async {});
+  });
+
+  group('RecorderBloc', () {
+    test('has an empty initial state', () async {
+      final bloc = RecorderBloc(recorderService: recorderService);
+
+      expect(bloc.state, const RecorderState());
+
+      await bloc.close();
+    });
+
+    blocTest<RecorderBloc, RecorderState>(
+      'emits nothing when start is added while already recording',
+      build: () => RecorderBloc(recorderService: recorderService),
+      seed: () => const RecorderState(recording: true),
+      act: (bloc) => bloc.add(const RecorderEvent.start()),
+      expect: () => <RecorderState>[],
+      verify: (_) {
+        verifyNever(() => recorderService.hasPermission());
+        verifyNever(() => recorderService.requestPermission());
+        verifyNever(() => recorderService.start());
+      },
+    );
+
+    blocTest<RecorderBloc, RecorderState>(
+      'requests permission and does not start recording when permission is missing',
+      setUp: () {
+        when(() => recorderService.hasPermission()).thenAnswer((_) async => false);
+        when(
+          () => recorderService.requestPermission(),
+        ).thenAnswer((_) async => true);
+      },
+      build: () => RecorderBloc(recorderService: recorderService),
+      act: (bloc) => bloc.add(const RecorderEvent.start()),
+      expect: () => <RecorderState>[],
+      verify: (_) {
+        verify(() => recorderService.hasPermission()).called(1);
+        verify(() => recorderService.requestPermission()).called(1);
+        verifyNever(() => recorderService.start());
+      },
+    );
+
+    blocTest<RecorderBloc, RecorderState>(
+      'emits overlay state and recording state when recording starts successfully',
+      setUp: () {
+        final recordingStream = Stream<Uint8List>.value(Uint8List(0));
+        when(() => recorderService.hasPermission()).thenAnswer((_) async => true);
+        when(() => recorderService.start()).thenAnswer((_) async => recordingStream);
+      },
+      build: () => RecorderBloc(recorderService: recorderService),
+      act: (bloc) => bloc.add(const RecorderEvent.start()),
+      expect: () => [
+        const RecorderState(show: true),
+        isA<RecorderState>()
+            .having((state) => state.show, 'show', true)
+            .having((state) => state.recording, 'recording', true)
+            .having((state) => state.recordingStream, 'recordingStream', isNotNull)
+            .having((state) => state.startedAt, 'startedAt', isNotNull),
+      ],
+      verify: (_) {
+        verify(() => recorderService.hasPermission()).called(1);
+        verify(() => recorderService.start()).called(1);
+        verifyNever(() => recorderService.requestPermission());
+      },
+    );
+
+    blocTest<RecorderBloc, RecorderState>(
+      'emits idle state when recording stops',
+      setUp: () {
+        when(() => recorderService.stop()).thenAnswer(
+          (_) async => File('/tmp/recording.pcm'),
+        );
+      },
+      build: () => RecorderBloc(recorderService: recorderService),
+      seed: () => RecorderState(
+        recording: true,
+        show: true,
+        recordingStream: Stream<Uint8List>.empty(),
+        startedAt: DateTime(2026, 1, 1),
+      ),
+      act: (bloc) => bloc.add(const RecorderEvent.stop()),
+      expect: () => const [
+        RecorderState(),
+      ],
+      verify: (_) {
+        verify(() => recorderService.stop()).called(1);
+      },
+    );
+
+    test('emits recorded notification when recording stops', () async {
+      final file = File('/tmp/recording.pcm');
+      when(() => recorderService.stop()).thenAnswer((_) async => file);
+
+      final bloc = RecorderBloc(recorderService: recorderService);
+      bloc.emit(
+        RecorderState(
+          recording: true,
+          show: true,
+          recordingStream: Stream<Uint8List>.empty(),
+          startedAt: DateTime(2026, 1, 1),
+        ),
+      );
+
+      final notificationExpectation = expectLater(
+        bloc.notificationStream,
+        emits(
+          isA<RecorderNotification>().having(
+            (notification) => notification.map(
+              recorded: (recorded) => recorded.file,
+              failure: (_) => null,
+            ),
+            'file',
+            file,
+          ).having(
+            (notification) => notification.map(
+              recorded: (recorded) => recorded.duration,
+              failure: (_) => null,
+            ),
+            'duration',
+            isA<Duration>(),
+          ),
+        ),
+      );
+
+      bloc.add(const RecorderEvent.stop());
+
+      await notificationExpectation;
+      await bloc.close();
+    });
+  });
+}
