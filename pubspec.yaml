@@ -38,6 +38,28 @@ flutter:
 
   uses-material-design: true
 
+  fonts:
+    - family: Bebas Neue
+      fonts:
+        - asset: fonts/bebas-neue/BebasNeue Light.otf
+          weight: 300
+        - asset: fonts/bebas-neue/BebasNeue Book.otf
+          weight: 400
+        - asset: fonts/bebas-neue/BebasNeue Regular.otf
+          weight: 400
+        - asset: fonts/bebas-neue/BebasNeue.otf
+          weight: 400
+        - asset: fonts/bebas-neue/BebasNeue Bold.otf
+          weight: 700
+    - family: SF Pro Display
+      fonts:
+        - asset: fonts/sf-pro-display/SFPRODISPLAYREGULAR.otf
+          weight: 400
+        - asset: fonts/sf-pro-display/SFPRODISPLAYMEDIUM.otf
+          weight: 500
+        - asset: fonts/sf-pro-display/SFPRODISPLAYBOLD.otf
+          weight: 700
+
   # To add assets to your application, add an assets section, like this:
   # assets:
   #   - images/a_dot_burr.jpeg
