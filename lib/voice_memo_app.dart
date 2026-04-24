@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:voice_memos/presentation/presentation.dart';
 
 class VoiceMemoApp extends StatelessWidget {
   const VoiceMemoApp({super.key});
@@ -6,10 +7,7 @@ class VoiceMemoApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-      ),
-      
+      theme: themeData(),
     );
   }
 }
