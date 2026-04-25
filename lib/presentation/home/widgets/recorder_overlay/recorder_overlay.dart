@@ -61,7 +61,7 @@ class _RecorderOverlayState extends State<RecorderOverlay>
             child: IgnorePointer(
               ignoring: true,
               child: RecorderBackground(
-                controller: _controller,
+                animation: _controller,
               ),
             ),
           ),
@@ -69,7 +69,7 @@ class _RecorderOverlayState extends State<RecorderOverlay>
             child: IgnorePointer(
               ignoring: true,
               child: RecorderOverlayContent(
-                controller: _controller,
+                animation: _controller,
               ),
             ),
           ),

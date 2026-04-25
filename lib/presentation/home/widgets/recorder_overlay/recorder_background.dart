@@ -3,10 +3,10 @@ import 'package:flutter/widgets.dart';
 import '../../../presentation.dart';
 
 class RecorderBackground extends StatelessWidget {
-  final AnimationController controller;
+  final Animation<double> animation;
 
   const RecorderBackground({
-    required this.controller,
+    required this.animation,
     super.key,
   });
 
@@ -20,12 +20,12 @@ class RecorderBackground extends StatelessWidget {
     );
 
     return AnimatedBuilder(
-      animation: controller,
+      animation: animation,
       builder: (context, child) {
         final yOffset = Tween(
           begin: bgSize.height,
           end: 0.0,
-        ).chain(CurveTween(curve: Curves.easeInOut)).evaluate(controller);
+        ).chain(CurveTween(curve: Curves.easeInOut)).evaluate(animation);
 
         return Transform.translate(
           offset: Offset(0, yOffset),
@@ -40,7 +40,6 @@ class RecorderBackground extends StatelessWidget {
         child: Container(
           height: bgSize.height,
           width: bgSize.width,
-
           decoration: BoxDecoration(
             color: VoiceMemosColors.black,
           ),

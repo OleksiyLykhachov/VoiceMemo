@@ -6,10 +6,10 @@ import '../../bloc/bloc.dart';
 import '../waveform/waveform.dart';
 
 class RecorderOverlayContent extends StatelessWidget {
-  final AnimationController controller;
+  final Animation<double> animation;
 
   const RecorderOverlayContent({
-    required this.controller,
+    required this.animation,
     super.key,
   });
 
@@ -17,19 +17,19 @@ class RecorderOverlayContent extends StatelessWidget {
   Widget build(BuildContext context) {
     return SafeArea(
       child: FadeTransition(
-        opacity: controller,
+        opacity: animation,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             AnimatedBuilder(
-              animation: controller,
+              animation: animation,
               builder: (context, child) {
                 final tween = Tween<Offset>(
                   begin: Offset(0, 90),
                   end: Offset(0, 30),
                 );
                 return Transform.translate(
-                  offset: tween.evaluate(controller),
+                  offset: tween.evaluate(animation),
                   child: child,
                 );
               },
