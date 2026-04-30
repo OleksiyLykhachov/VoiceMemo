@@ -8,4 +8,5 @@ abstract class VoiceMemosColors {
   static const textTertiary = Color(0xffA4A6A7);
   static const textSecondary = Color(0xffA0A2A3);
   static const grey = Color(0xff8a8a8a);
+  static const background = Color(0xffE7ECEB);
 }
