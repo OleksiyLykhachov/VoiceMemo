@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/widgets.dart';
 import 'package:intl/intl.dart';
+
 import 'package:voice_memos/presentation/presentation.dart';
 
 class RecordingDuration extends StatefulWidget {
@@ -61,11 +62,16 @@ class _RecordingDurationState extends State<RecordingDuration> {
   }
 
   String get _formattedElapsed {
+    final hours = _elapsed.inHours;
     final minutes = _elapsed.inMinutes.remainder(60);
     final seconds = _elapsed.inSeconds.remainder(60);
     final centiseconds = (_elapsed.inMilliseconds ~/ 10).remainder(100);
 
-    return '${_twoDigitsFormat.format(minutes)}:'
+    final hoursPrefix = hours == 0
+        ? ''
+        : '${_twoDigitsFormat.format(hours)}:';
+
+    return '$hoursPrefix${_twoDigitsFormat.format(minutes)}:'
         '${_twoDigitsFormat.format(seconds)},'
         '${_twoDigitsFormat.format(centiseconds)}';
   }
