@@ -2,10 +2,10 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:voice_memos/presentation/home/bloc/bloc.dart';
+
+import 'package:voice_memos/presentation/presentation.dart';
 import 'package:voice_memos/utils/utils.dart';
 
-import '../dialogs/save_record/save_record.dart';
 import 'widgets/home_content.dart';
 import 'widgets/recorder_overlay/recorder_overlay.dart';
 
@@ -73,6 +73,7 @@ class HomePage extends StatelessWidget {
         },
         child: Scaffold(
           resizeToAvoidBottomInset: false,
+          backgroundColor: VoiceMemosColors.background,
           body: RecorderOverlay(
             child: const HomeContent(),
           ),
