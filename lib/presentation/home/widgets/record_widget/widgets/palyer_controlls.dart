@@ -4,9 +4,9 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:voice_memos/presentation/presentation.dart';
 
 class PlayerControlls extends StatelessWidget {
-  final VoidCallback onTogglePlay;
-  final ValueChanged<Duration> onForward;
-  final ValueChanged<Duration> onBackward;
+  final VoidCallback? onTogglePlay;
+  final ValueChanged<Duration>? onForward;
+  final ValueChanged<Duration>? onBackward;
   final bool playing;
 
   const PlayerControlls({
@@ -26,33 +26,53 @@ class PlayerControlls extends StatelessWidget {
       children: [
         Expanded(
           child: _IconButton(
-            onTap: () => onBackward(_duration),
+            onTap: () => onBackward?.call(_duration),
             path: Assets.backward10,
           ),
         ),
-        TappableArea(
-          child: SizedBox.square(
-            dimension: 80,
-            child: DecoratedBox(
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: VoiceMemosColors.black,
-              ),
-              child: Icon(
-                Icons.play_arrow_rounded,
-                size: 35,
-                color: VoiceMemosColors.white,
-              ),
-            ),
-          ),
+        PlayButton(
+          onTap: () => onTogglePlay?.call(),
+          playing: playing,
         ),
         Expanded(
           child: _IconButton(
-            onTap: () => onForward(_duration),
+            onTap: () => onForward?.call(_duration),
             path: Assets.forward10,
           ),
         ),
       ],
+    );
+  }
+}
+
+class PlayButton extends StatelessWidget {
+  final bool playing;
+  final VoidCallback onTap;
+
+  const PlayButton({
+    required this.playing,
+    required this.onTap,
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return TappableArea(
+      onTap: onTap,
+      child: SizedBox.square(
+        dimension: 80,
+        child: DecoratedBox(
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            color: VoiceMemosColors.black,
+          ),
+          child: Icon(
+            playing ? Icons.pause_rounded : Icons.play_arrow_rounded,
+            size: 35,
+            color: VoiceMemosColors.white,
+          ),
+        ),
+      ),
     );
   }
 }

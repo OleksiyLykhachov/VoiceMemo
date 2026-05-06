@@ -5,8 +5,9 @@ typedef RecordBuilder =
     Widget Function(
       BuildContext context,
       int index,
-      Animation<double> animation,
-    );
+      Animation<double> animation, {
+      bool active,
+    });
 
 class RecordsStack extends StatefulWidget {
   final int itemsCount;
@@ -78,12 +79,48 @@ class _RecordsStackState extends State<RecordsStack>
     super.initState();
     _controller = AnimationController.unbounded(vsync: this)
       ..addListener(_syncPage);
+
+    if (widget.itemsCount > 0) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) {
+          _notifyRecordChanged(_page);
+        }
+      });
+    }
   }
 
   @override
   void dispose() {
     _controller.dispose();
     super.dispose();
+  }
+
+  @override
+  void didUpdateWidget(covariant RecordsStack oldWidget) {
+    super.didUpdateWidget(oldWidget);
+
+    if (widget.itemsCount == 0) {
+      if (_page != 0) {
+        setState(() {
+          _page = 0;
+        });
+      }
+      _setControllerValue(0);
+      return;
+    }
+
+    final nextPage = _page.clamp(0, widget.itemsCount - 1);
+    final pageChanged = nextPage != _page;
+
+    if (!pageChanged && oldWidget.itemsCount == widget.itemsCount) {
+      return;
+    }
+
+    setState(() {
+      _page = nextPage;
+    });
+    _setControllerValue(nextPage.toDouble());
+    _notifyRecordChanged(nextPage);
   }
 
   double get _maxPage => (widget.itemsCount - 1).toDouble();
@@ -122,8 +159,14 @@ class _RecordsStackState extends State<RecordsStack>
     }
 
     _setControllerValue(currentPage);
+    _notifyRecordChanged(target);
     _controller.animateWith(
-      SpringSimulation(_spring, currentPage, target.toDouble(), velocityPages),
+      SpringSimulation(
+        _spring,
+        currentPage,
+        target.toDouble(),
+        velocityPages,
+      ),
     );
   }
 
@@ -135,11 +178,13 @@ class _RecordsStackState extends State<RecordsStack>
     final nextPage = _currentPage.round();
     if (_page == nextPage) return;
 
-    widget.onRecordChanged?.call(_page);
-
     setState(() {
       _page = nextPage;
     });
+  }
+
+  void _notifyRecordChanged(int page) {
+    widget.onRecordChanged?.call(page);
   }
 
   double _estimateVelocityPxPerSec() {
@@ -191,12 +236,15 @@ class _RecordsStackState extends State<RecordsStack>
   }
 
   Widget _buildItem(int index) {
+    final isActive = index == _page;
+
     return AnimatedBuilder(
       animation: _controller,
       child: widget.builder(
         context,
         index,
         _animationForItem(index),
+        active: isActive,
       ),
       builder: (context, child) {
         final rank = index - _currentPage;
@@ -210,12 +258,15 @@ class _RecordsStackState extends State<RecordsStack>
           right: 0,
           top: top,
           height: widget.cardHeight,
-          child: Transform.translate(
-            offset: Offset(0, translateY),
-            child: Transform.scale(
-              scale: scale,
-              alignment: Alignment.bottomCenter,
-              child: Opacity(opacity: opacity, child: child),
+          child: IgnorePointer(
+            ignoring: !isActive,
+            child: Transform.translate(
+              offset: Offset(0, translateY),
+              child: Transform.scale(
+                scale: scale,
+                alignment: Alignment.bottomCenter,
+                child: Opacity(opacity: opacity, child: child),
+              ),
             ),
           ),
         );
