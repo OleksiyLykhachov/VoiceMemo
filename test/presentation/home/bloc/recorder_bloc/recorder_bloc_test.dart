@@ -109,7 +109,10 @@ void main() {
       'emits idle state when recording stops',
       setUp: () {
         when(() => recorderService.stop()).thenAnswer(
-          (_) async => File('/tmp/recording.pcm'),
+          (_) async => AudioRecording(
+            file: File('/tmp/recording.pcm'),
+            duration: const Duration(seconds: 3),
+          ),
         );
       },
       build: () => RecorderBloc(recorderService: recorderService),
@@ -130,7 +133,12 @@ void main() {
 
     test('emits recorded notification when recording stops', () async {
       final file = File('/tmp/recording.pcm');
-      when(() => recorderService.stop()).thenAnswer((_) async => file);
+      when(() => recorderService.stop()).thenAnswer(
+        (_) async => AudioRecording(
+          file: file,
+          duration: const Duration(seconds: 3),
+        ),
+      );
 
       final bloc = RecorderBloc(recorderService: recorderService);
       bloc.emit(
@@ -158,7 +166,7 @@ void main() {
               failure: (_) => null,
             ),
             'duration',
-            isA<Duration>(),
+            const Duration(seconds: 3),
           ),
         ),
       );
