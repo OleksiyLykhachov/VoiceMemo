@@ -18,4 +18,8 @@ class RecordDurationUtil {
 
     return duration;
   }
+
+  Future<void> dispose() {
+    return _player.dispose();
+  }
 }
