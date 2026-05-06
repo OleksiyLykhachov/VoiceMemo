@@ -1,12 +1,12 @@
 import 'dart:async';
 import 'dart:io';
+
 import 'package:injectable/injectable.dart';
-import 'package:path/path.dart' as path;
-import 'package:path_provider/path_provider.dart';
 import 'package:record/record.dart';
 
 import 'amplitude_data.dart';
 import 'recording_exceptions.dart';
+import '../records_path_util.dart';
 
 export 'amplitude_data.dart';
 export 'recording_exceptions.dart';
@@ -31,10 +31,13 @@ abstract interface class RecorderService {
 @Injectable(as: RecorderService)
 class RecordServiceImpl implements RecorderService {
   final AudioRecorder _recorder;
+  final RecordsPathUtil _pathUtil;
 
   RecordServiceImpl({
     required AudioRecorder recorder,
-  }) : _recorder = recorder;
+    required RecordsPathUtil pathUtil,
+  }) : _pathUtil = pathUtil,
+       _recorder = recorder;
 
   @override
   Future<void> dispose() async {
@@ -87,18 +90,9 @@ class RecordServiceImpl implements RecorderService {
   }
 
   Future<String> _getPath() async {
-    final documentsDirectory = await getApplicationDocumentsDirectory();
-    final recordsDirectory = Directory(
-      path.join(documentsDirectory.path, 'records'),
-    );
-
-    if (!await recordsDirectory.exists()) {
-      await recordsDirectory.create(recursive: true);
-    }
-
     final fileName = 'record_${DateTime.now().microsecondsSinceEpoch}.flac';
 
-    return path.join(recordsDirectory.path, fileName);
+    return _pathUtil.createAbsolutePath(fileName);
   }
 
   @override
@@ -125,13 +119,10 @@ class RecordServiceImpl implements RecorderService {
 
   @override
   Stream<AmplitudeData> getAmplitudeStream() {
-    return _recorder.onAmplitudeChanged(const Duration(milliseconds: 50)).map(
-      (amplitude) {
-        return AmplitudeData(
-          current: amplitude.current,
-          max: amplitude.max,
-        );
-      },
-    );
+    return _recorder.onAmplitudeChanged(const Duration(milliseconds: 50)).map((
+      amplitude,
+    ) {
+      return AmplitudeData(current: amplitude.current, max: amplitude.max);
+    });
   }
 }

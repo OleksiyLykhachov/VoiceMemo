@@ -1,9 +1,11 @@
 import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
+import 'package:voice_memos/data/converters/record_converters.dart';
 import 'package:voice_memos/data/repositories/objectbox_records_repository.dart';
 import 'package:voice_memos/domain/domain.dart';
 import 'package:voice_memos/objectbox.g.dart';
+import 'package:voice_memos/utils/records_path_util.dart';
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
@@ -17,7 +19,12 @@ void main() {
       'objectbox_records_repository_test_',
     );
     store = await openStore(directory: tempDirectory!.path);
-    repository = ObjectBoxRecordsRepository(store!);
+    final pathUtil = RecordsPathUtil(documentsDirectory: tempDirectory!);
+    repository = ObjectBoxRecordsRepository(
+      store: store!,
+      recordConverter: RecordConverter(pathUtil: pathUtil),
+      recordModelConverter: RecordModelConverter(pathUtil: pathUtil),
+    );
   });
 
   tearDown(() async {
@@ -55,63 +62,57 @@ void main() {
           'newer',
           'older',
         ]);
-        expect(
-          records.map((record) => record.createdAt).toList(),
-          [DateTime(2024, 1, 2), DateTime(2024, 1, 1)],
-        );
+        expect(records.map((record) => record.createdAt).toList(), [
+          DateTime(2024, 1, 2),
+          DateTime(2024, 1, 1),
+        ]);
         expect(records.every((record) => record.id > 0), isTrue);
       },
     );
 
-    test(
-      'delete removes a record by id',
-      () async {
-        final firstRecord = _record(
-          id: 0,
-          name: 'first',
-          createdAt: DateTime(2024, 1, 1),
-        );
-        final secondRecord = _record(
-          id: 0,
-          name: 'second',
-          createdAt: DateTime(2024, 1, 2),
-        );
+    test('delete removes a record by id', () async {
+      final firstRecord = _record(
+        id: 0,
+        name: 'first',
+        createdAt: DateTime(2024, 1, 1),
+      );
+      final secondRecord = _record(
+        id: 0,
+        name: 'second',
+        createdAt: DateTime(2024, 1, 2),
+      );
 
-        await repository.save(firstRecord);
-        await repository.save(secondRecord);
+      await repository.save(firstRecord);
+      await repository.save(secondRecord);
 
-        final savedRecords = await repository.getRecords();
-        final firstSavedRecord = savedRecords.singleWhere(
-          (record) => record.name == firstRecord.name,
-        );
+      final savedRecords = await repository.getRecords();
+      final firstSavedRecord = savedRecords.singleWhere(
+        (record) => record.name == firstRecord.name,
+      );
 
-        await repository.delete(firstSavedRecord.id);
+      await repository.delete(firstSavedRecord.id);
 
-        final records = await repository.getRecords();
+      final records = await repository.getRecords();
 
-        expect(records, hasLength(1));
-        expect(records.single.name, secondRecord.name);
-      },
-    );
+      expect(records, hasLength(1));
+      expect(records.single.name, secondRecord.name);
+    });
 
-    test(
-      'delete ignores missing ids',
-      () async {
-        final record = _record(
-          id: 0,
-          name: 'kept',
-          createdAt: DateTime(2024, 1, 1),
-        );
+    test('delete ignores missing ids', () async {
+      final record = _record(
+        id: 0,
+        name: 'kept',
+        createdAt: DateTime(2024, 1, 1),
+      );
 
-        await repository.save(record);
+      await repository.save(record);
 
-        await repository.delete(999);
+      await repository.delete(999);
 
-        final records = await repository.getRecords();
-        expect(records, hasLength(1));
-        expect(records.single.name, record.name);
-      },
-    );
+      final records = await repository.getRecords();
+      expect(records, hasLength(1));
+      expect(records.single.name, record.name);
+    });
 
     test(
       'getRecordsStream emits current records immediately and updates on changes',

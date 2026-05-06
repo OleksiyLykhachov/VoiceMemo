@@ -3,7 +3,7 @@ import 'dart:math' as math;
 
 import 'package:collection/collection.dart';
 
-const double kWaveformMinAmplitude = 0.008;
+const double kWaveformMinAmplitude = 0.006;
 
 class WaveformTimelineController {
   static const double rightBaselineAmplitude = 0.01;

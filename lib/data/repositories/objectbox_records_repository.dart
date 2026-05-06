@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:objectbox/objectbox.dart';
 import 'package:injectable/injectable.dart' hide Order;
 
@@ -8,17 +10,24 @@ import '../models/record_model.dart';
 
 @Injectable(as: RecordsRepository)
 class ObjectBoxRecordsRepository implements RecordsRepository {
-  ObjectBoxRecordsRepository(this._store);
+  ObjectBoxRecordsRepository({
+    required Converter<Record, RecordModel> recordConverter,
+    required Converter<RecordModel, Record> recordModelConverter,
+    required Store store,
+  }) : _store = store,
+       _recordConverter = recordConverter,
+       _recordModelConverter = recordModelConverter;
 
   final Store _store;
+  final Converter<Record, RecordModel> _recordConverter;
+  final Converter<RecordModel, Record> _recordModelConverter;
 
   Box<RecordModel> get _recordsBox => _store.box<RecordModel>();
 
   @override
   Future<void> delete(int id) async {
-    final query = _recordsBox
-        .query(RecordModel_.objectBoxId.equals(id))
-        .build();
+    final query =
+        _recordsBox.query(RecordModel_.objectBoxId.equals(id)).build();
     final record = query.findFirst();
     query.close();
 
@@ -32,18 +41,18 @@ class ObjectBoxRecordsRepository implements RecordsRepository {
     final records = _recordsBox.getAll();
     records.sort((a, b) => b.createdAt.compareTo(a.createdAt));
 
-    return records.map((record) => record.toEntity()).toList(growable: false);
+    return records.map(_recordModelConverter.convert).toList(growable: false);
   }
 
   @override
   Future<Record?> getRecordById(int id) async {
     final record = _recordsBox.get(id);
-    return record?.toEntity();
+    return record == null ? null : _recordModelConverter.convert(record);
   }
 
   @override
   Future<Record> save(Record record) async {
-    final id = _recordsBox.put(RecordModel.fromEntity(record));
+    final id = _recordsBox.put(_recordConverter.convert(record));
 
     return record.copyWith(id: id);
   }
@@ -57,7 +66,7 @@ class ObjectBoxRecordsRepository implements RecordsRepository {
         .map((query) {
           return query
               .find()
-              .map((record) => record.toEntity())
+              .map(_recordModelConverter.convert)
               .toList(growable: false);
         });
   }
