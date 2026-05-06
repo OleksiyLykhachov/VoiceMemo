@@ -27,57 +27,53 @@ class RecorderBloc extends Bloc<RecorderEvent, RecorderState>
   }
 
   FutureOr<void> _onStart(_Start event, Emitter<RecorderState> emit) {
-    return handle(
-      () async {
-        if (state.recording) {
-          return;
-        }
+    return handle(() async {
+      if (state.recording) {
+        return;
+      }
 
-        final hasPermission = await _recorderService.resolvePermission();
+      final hasPermission = await _recorderService.resolvePermission();
 
-        if (!hasPermission) {
-          await _recorderService.requestPermission();
-        }
+      if (!hasPermission) {
+        await _recorderService.requestPermission();
+      }
 
-        emit(state.copyWith(show: true));
+      emit(state.copyWith(show: true));
 
-        await _recorderService.start();
-        final stream = _recorderService.getAmplitudeStream();
+      await _recorderService.start();
+      final stream = _recorderService.getAmplitudeStream();
 
-        emit(
-          state.copyWith(
-            amplitudeStream: stream,
-            recording: true,
-            startedAt: DateTime.now(),
-          ),
-        );
-      },
-    );
+      emit(
+        state.copyWith(
+          amplitudeStream: stream,
+          recording: true,
+          startedAt: DateTime.now(),
+        ),
+      );
+    });
   }
 
   FutureOr<void> _onStop(_Stop event, Emitter<RecorderState> emit) {
-    return handle(
-      () async {
-        final file = await _recorderService.stop();
+    return handle(() async {
+      final stopDate = DateTime.now();
+      final recording = await _recorderService.stop();
 
-        final duration = state.startedAt == null
-            ? Duration.zero
-            : DateTime.now().difference(state.startedAt!);
+      emitNotification(
+        RecorderNotification.recorded(
+          recording.file,
+          recording.duration ?? stopDate.difference(state.startedAt!),
+        ),
+      );
 
-        emitNotification(
-          RecorderNotification.recorded(file, duration),
-        );
-
-        emit(
-          state.copyWith(
-            show: false,
-            recording: false,
-            amplitudeStream: null,
-            startedAt: null,
-          ),
-        );
-      },
-    );
+      emit(
+        state.copyWith(
+          show: false,
+          recording: false,
+          amplitudeStream: null,
+          startedAt: null,
+        ),
+      );
+    });
   }
 
   @override
