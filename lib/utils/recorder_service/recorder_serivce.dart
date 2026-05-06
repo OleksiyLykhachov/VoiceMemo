@@ -43,8 +43,11 @@ class RecordServiceImpl implements RecorderService {
        _recorder = recorder;
 
   @override
-  Future<void> dispose() async {
-    await _recorder.dispose();
+  Future<void> dispose() {
+    return Future.wait([
+      _recorder.dispose(),
+      _recordDuration.dispose(),
+    ]);
   }
 
   @override
