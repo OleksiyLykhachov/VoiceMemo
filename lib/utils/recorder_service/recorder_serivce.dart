@@ -3,13 +3,13 @@ import 'dart:io';
 
 import 'package:injectable/injectable.dart';
 import 'package:record/record.dart';
+import 'package:voice_memos/utils/utils.dart';
 
-import 'amplitude_data.dart';
-import 'recording_exceptions.dart';
-import '../records_path_util.dart';
+import 'record_duration_util.dart';
 
 export 'amplitude_data.dart';
 export 'recording_exceptions.dart';
+export 'audio_recording.dart';
 
 abstract interface class RecorderService {
   Future<bool> get isHasPermission;
@@ -19,7 +19,7 @@ abstract interface class RecorderService {
   Future<void> dispose();
 
   Future<void> start();
-  Future<File> stop();
+  Future<AudioRecording> stop();
   Future<void> cancel();
 
   Stream<AmplitudeData> getAmplitudeStream();
@@ -32,11 +32,14 @@ abstract interface class RecorderService {
 class RecordServiceImpl implements RecorderService {
   final AudioRecorder _recorder;
   final RecordsPathUtil _pathUtil;
+  final RecordDurationUtil _recordDuration;
 
   RecordServiceImpl({
     required AudioRecorder recorder,
     required RecordsPathUtil pathUtil,
-  }) : _pathUtil = pathUtil,
+    required RecordDurationUtil recordDurationUtil,
+  }) : _recordDuration = recordDurationUtil,
+       _pathUtil = pathUtil,
        _recorder = recorder;
 
   @override
@@ -96,7 +99,7 @@ class RecordServiceImpl implements RecorderService {
   }
 
   @override
-  Future<File> stop() async {
+  Future<AudioRecording> stop() async {
     final isRecording = await _recorder.isRecording();
 
     if (!isRecording) {
@@ -109,7 +112,12 @@ class RecordServiceImpl implements RecorderService {
       throw RecordingException.recordingNotSaved();
     }
 
-    return File(path);
+    final file = File(path);
+
+    return AudioRecording(
+      file: file,
+      duration: await _recordDuration.getFileDuration(file),
+    );
   }
 
   @override
