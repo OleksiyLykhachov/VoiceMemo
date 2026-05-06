@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:io';
-import 'dart:typed_data';
 
 import 'package:bloc/bloc.dart';
 import 'package:bloc_concurrency/bloc_concurrency.dart';
@@ -34,20 +33,20 @@ class RecorderBloc extends Bloc<RecorderEvent, RecorderState>
           return;
         }
 
-        final hasPermission = await _recorderService.hasPermission();
+        final hasPermission = await _recorderService.resolvePermission();
 
         if (!hasPermission) {
           await _recorderService.requestPermission();
-          return;
         }
 
         emit(state.copyWith(show: true));
 
-        final stream = await _recorderService.start();
+        await _recorderService.start();
+        final stream = _recorderService.getAmplitudeStream();
 
         emit(
           state.copyWith(
-            recordingStream: stream,
+            amplitudeStream: stream,
             recording: true,
             startedAt: DateTime.now(),
           ),
@@ -60,17 +59,20 @@ class RecorderBloc extends Bloc<RecorderEvent, RecorderState>
     return handle(
       () async {
         final file = await _recorderService.stop();
+
         final duration = state.startedAt == null
             ? Duration.zero
             : DateTime.now().difference(state.startedAt!);
 
-        emitNotification(RecorderNotification.recorded(file, duration));
+        emitNotification(
+          RecorderNotification.recorded(file, duration),
+        );
 
         emit(
           state.copyWith(
             show: false,
             recording: false,
-            recordingStream: null,
+            amplitudeStream: null,
             startedAt: null,
           ),
         );

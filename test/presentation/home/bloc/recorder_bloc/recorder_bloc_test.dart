@@ -1,5 +1,4 @@
 import 'dart:io';
-import 'dart:typed_data';
 
 import 'package:bloc_test/bloc_test.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -33,36 +32,28 @@ void main() {
       act: (bloc) => bloc.add(const RecorderEvent.start()),
       expect: () => <RecorderState>[],
       verify: (_) {
-        verifyNever(() => recorderService.hasPermission());
+        verifyNever(() => recorderService.resolvePermission());
         verifyNever(() => recorderService.requestPermission());
         verifyNever(() => recorderService.start());
       },
     );
 
     blocTest<RecorderBloc, RecorderState>(
-      'requests permission and does not start recording when permission is missing',
+      'requests permission before starting when initial permission check fails',
       setUp: () {
-        when(() => recorderService.hasPermission()).thenAnswer((_) async => false);
+        final amplitudeStream = Stream<AmplitudeData>.value(
+          const AmplitudeData(current: 0.5, max: 1),
+        );
+        when(
+          () => recorderService.resolvePermission(),
+        ).thenAnswer((_) async => false);
         when(
           () => recorderService.requestPermission(),
         ).thenAnswer((_) async => true);
-      },
-      build: () => RecorderBloc(recorderService: recorderService),
-      act: (bloc) => bloc.add(const RecorderEvent.start()),
-      expect: () => <RecorderState>[],
-      verify: (_) {
-        verify(() => recorderService.hasPermission()).called(1);
-        verify(() => recorderService.requestPermission()).called(1);
-        verifyNever(() => recorderService.start());
-      },
-    );
-
-    blocTest<RecorderBloc, RecorderState>(
-      'emits overlay state and recording state when recording starts successfully',
-      setUp: () {
-        final recordingStream = Stream<Uint8List>.value(Uint8List(0));
-        when(() => recorderService.hasPermission()).thenAnswer((_) async => true);
-        when(() => recorderService.start()).thenAnswer((_) async => recordingStream);
+        when(() => recorderService.start()).thenAnswer((_) async {});
+        when(
+          () => recorderService.getAmplitudeStream(),
+        ).thenAnswer((_) => amplitudeStream);
       },
       build: () => RecorderBloc(recorderService: recorderService),
       act: (bloc) => bloc.add(const RecorderEvent.start()),
@@ -71,12 +62,45 @@ void main() {
         isA<RecorderState>()
             .having((state) => state.show, 'show', true)
             .having((state) => state.recording, 'recording', true)
-            .having((state) => state.recordingStream, 'recordingStream', isNotNull)
+            .having((state) => state.amplitudeStream, 'amplitudeStream', isNotNull)
             .having((state) => state.startedAt, 'startedAt', isNotNull),
       ],
       verify: (_) {
-        verify(() => recorderService.hasPermission()).called(1);
+        verify(() => recorderService.resolvePermission()).called(1);
+        verify(() => recorderService.requestPermission()).called(1);
         verify(() => recorderService.start()).called(1);
+        verify(() => recorderService.getAmplitudeStream()).called(1);
+      },
+    );
+
+    blocTest<RecorderBloc, RecorderState>(
+      'emits overlay state and recording state when recording starts successfully',
+      setUp: () {
+        final amplitudeStream = Stream<AmplitudeData>.value(
+          const AmplitudeData(current: 0.5, max: 1),
+        );
+        when(
+          () => recorderService.resolvePermission(),
+        ).thenAnswer((_) async => true);
+        when(() => recorderService.start()).thenAnswer((_) async {});
+        when(
+          () => recorderService.getAmplitudeStream(),
+        ).thenAnswer((_) => amplitudeStream);
+      },
+      build: () => RecorderBloc(recorderService: recorderService),
+      act: (bloc) => bloc.add(const RecorderEvent.start()),
+      expect: () => [
+        const RecorderState(show: true),
+        isA<RecorderState>()
+            .having((state) => state.show, 'show', true)
+            .having((state) => state.recording, 'recording', true)
+            .having((state) => state.amplitudeStream, 'amplitudeStream', isNotNull)
+            .having((state) => state.startedAt, 'startedAt', isNotNull),
+      ],
+      verify: (_) {
+        verify(() => recorderService.resolvePermission()).called(1);
+        verify(() => recorderService.start()).called(1);
+        verify(() => recorderService.getAmplitudeStream()).called(1);
         verifyNever(() => recorderService.requestPermission());
       },
     );
@@ -92,7 +116,7 @@ void main() {
       seed: () => RecorderState(
         recording: true,
         show: true,
-        recordingStream: Stream<Uint8List>.empty(),
+        amplitudeStream: Stream<AmplitudeData>.empty(),
         startedAt: DateTime(2026, 1, 1),
       ),
       act: (bloc) => bloc.add(const RecorderEvent.stop()),
@@ -113,7 +137,7 @@ void main() {
         RecorderState(
           recording: true,
           show: true,
-          recordingStream: Stream<Uint8List>.empty(),
+          amplitudeStream: Stream<AmplitudeData>.empty(),
           startedAt: DateTime(2026, 1, 1),
         ),
       );
