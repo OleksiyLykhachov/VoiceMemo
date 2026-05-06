@@ -47,7 +47,7 @@ class RecorderOverlayContent extends StatelessWidget {
                 child: Builder(
                   builder: (context) {
                     final stream = context.select(
-                      (RecorderBloc bloc) => bloc.state.recordingStream,
+                      (RecorderBloc bloc) => bloc.state.amplitudeStream,
                     );
                     return Waveform(stream: stream);
                   },

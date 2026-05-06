@@ -1,11 +1,11 @@
 import 'dart:async';
-import 'dart:typed_data';
+import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:voice_memos/presentation/presentation.dart';
+import 'package:voice_memos/utils/utils.dart';
 
-import 'waveform_amplitude_processor.dart';
 import 'waveform_painter.dart';
 import 'waveform_timeline_controller.dart';
 
@@ -15,7 +15,7 @@ class Waveform extends StatefulWidget {
     super.key,
   });
 
-  final Stream<Uint8List>? stream;
+  final Stream<AmplitudeData>? stream;
 
   @override
   State<Waveform> createState() => _WaveformState();
@@ -25,10 +25,9 @@ class _WaveformState extends State<Waveform>
     with SingleTickerProviderStateMixin {
   static const _shiftAnimationDuration = Duration(milliseconds: 44);
 
-  late final WaveformAmplitudeProcessor _amplitudeProcessor;
   late final WaveformTimelineController _timelineController;
   late final AnimationController _shiftController;
-  StreamSubscription<Uint8List>? _audioSubscription;
+  StreamSubscription<AmplitudeData>? _audioSubscription;
 
   bool _isRecording = false;
   bool _shiftLoopActive = false;
@@ -36,7 +35,6 @@ class _WaveformState extends State<Waveform>
   @override
   void initState() {
     super.initState();
-    _amplitudeProcessor = WaveformAmplitudeProcessor();
     _timelineController = WaveformTimelineController()..reset();
     _shiftController =
         AnimationController(
@@ -70,7 +68,7 @@ class _WaveformState extends State<Waveform>
     super.dispose();
   }
 
-  Future<void> _replaceStream(Stream<Uint8List>? stream) async {
+  Future<void> _replaceStream(Stream<AmplitudeData>? stream) async {
     final subscription = _audioSubscription;
     _audioSubscription = null;
     await subscription?.cancel();
@@ -88,15 +86,12 @@ class _WaveformState extends State<Waveform>
     _subscribeToStream(stream);
   }
 
-  void _onAudioChunk(Uint8List chunk) {
+  void _onAmplitudeData(AmplitudeData amplitudeData) {
     if (!mounted) {
       return;
     }
 
-    final amplitudes = _amplitudeProcessor.processChunk(chunk);
-    for (final amplitude in amplitudes) {
-      _timelineController.enqueueAmplitude(amplitude);
-    }
+    _timelineController.enqueueAmplitude(_normalizeAmplitude(amplitudeData));
   }
 
   void _onStreamDone() {
@@ -154,13 +149,13 @@ class _WaveformState extends State<Waveform>
     _runNextShift();
   }
 
-  void _subscribeToStream(Stream<Uint8List>? stream) {
+  void _subscribeToStream(Stream<AmplitudeData>? stream) {
     if (stream == null) {
       return;
     }
 
     _audioSubscription = stream.listen(
-      _onAudioChunk,
+      _onAmplitudeData,
       onError: _onStreamError,
       onDone: _onStreamDone,
       cancelOnError: true,
@@ -187,8 +182,36 @@ class _WaveformState extends State<Waveform>
   }
 
   void _resetWaveform() {
-    _amplitudeProcessor.reset();
     _timelineController.reset();
+  }
+
+  double _normalizeAmplitude(AmplitudeData amplitudeData) {
+    final current = amplitudeData.current;
+    final max = amplitudeData.max;
+
+    if (!current.isFinite) {
+      return kWaveformMinAmplitude;
+    }
+
+    final currentLinear = _dbToLinear(current);
+    if (!max.isFinite) {
+      return currentLinear;
+    }
+
+    final maxLinear = _dbToLinear(max);
+    final normalized =
+        maxLinear > 0 ? (currentLinear / maxLinear) : currentLinear;
+    if (!normalized.isFinite) {
+      return kWaveformMinAmplitude;
+    }
+
+    return math.max(normalized.clamp(0.0, 1.0), kWaveformMinAmplitude);
+  }
+
+  double _dbToLinear(double value) {
+    final clampedDb = value.clamp(-160.0, 0.0);
+    final linear = math.pow(10, clampedDb / 20) as double;
+    return linear.isFinite ? linear : kWaveformMinAmplitude;
   }
 
   void _stopStreamDrivenAnimation() {

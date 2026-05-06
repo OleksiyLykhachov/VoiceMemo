@@ -3,7 +3,7 @@ import 'dart:math' as math;
 
 import 'package:collection/collection.dart';
 
-import 'waveform_amplitude_processor.dart';
+const double kWaveformMinAmplitude = 0.008;
 
 class WaveformTimelineController {
   static const double rightBaselineAmplitude = 0.01;
@@ -15,7 +15,7 @@ class WaveformTimelineController {
   WaveformFrame _currentFrame = const WaveformFrame.empty();
   WaveformFrame _fromFrame = const WaveformFrame.empty();
   WaveformFrame _toFrame = const WaveformFrame.empty();
-  double _lastRenderedAmplitude = WaveformAmplitudeProcessor.minAmplitude;
+  double _lastRenderedAmplitude = kWaveformMinAmplitude;
 
   WaveformGeometry get geometry => _geometry;
   WaveformFrame get fromFrame => _fromFrame;
@@ -59,7 +59,7 @@ class WaveformTimelineController {
   }
 
   void reset() {
-    _lastRenderedAmplitude = WaveformAmplitudeProcessor.minAmplitude;
+    _lastRenderedAmplitude = kWaveformMinAmplitude;
     _pendingAmplitudes.clear();
 
     final baselineFrame = WaveformFrame.baseline(
@@ -76,7 +76,7 @@ class WaveformTimelineController {
         _pendingAmplitudes.isNotEmpty
             ? _pendingAmplitudes.removeFirst()
             : math.max(
-              WaveformAmplitudeProcessor.minAmplitude,
+              kWaveformMinAmplitude,
               _lastRenderedAmplitude * fallbackDecay,
             );
     _lastRenderedAmplitude = nextLeftAmplitude;

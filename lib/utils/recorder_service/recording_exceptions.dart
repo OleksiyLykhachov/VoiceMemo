@@ -18,10 +18,15 @@ class RecordingException implements Exception {
   const RecordingException.notStarted()
     : type = RecordingExceptionType.recordingNotStarted,
       message = 'Recording has not been started';
+
+  const RecordingException.recordingNotSaved()
+    : type = RecordingExceptionType.recodringNotSaved,
+      message = 'Error occurred while saving the recording';
 }
 
 enum RecordingExceptionType {
   permissionNotGranted,
   recordingAlreadyInProgress,
   recordingNotStarted,
+  recodringNotSaved,
 }
