@@ -10,10 +10,16 @@ import 'widgets/palyer_controlls.dart';
 
 class RecordWidget extends StatelessWidget {
   final Record record;
+  final bool playing;
   final Animation<double>? animation;
+  final double? progress;
+  final RecordCallbacks? callbacks;
 
   const RecordWidget({
     required this.record,
+    required this.playing,
+    this.progress,
+    this.callbacks,
     this.animation,
     super.key,
   });
@@ -21,7 +27,7 @@ class RecordWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return RecordBackground(
-      progress: 0.1,
+      progress: progress ?? 0,
       child: LayoutBuilder(
         builder: (context, constraints) {
           return Column(
@@ -59,10 +65,10 @@ class RecordWidget extends StatelessWidget {
                     children: [
                       Expanded(
                         child: PlayerControlls(
-                          onTogglePlay: () {},
-                          onForward: (_) {},
-                          onBackward: (_) {},
-                          playing: true,
+                          onTogglePlay: callbacks?.onTogglePlay,
+                          onForward: callbacks?.seekFroward,
+                          onBackward: callbacks?.seekBackward,
+                          playing: playing,
                         ),
                       ),
                       const Gap(8),
@@ -76,9 +82,12 @@ class RecordWidget extends StatelessWidget {
                                 ),
                               ),
                             ),
-                            Icon(
-                              Icons.more_horiz,
-                              size: 30,
+                            IconButton(
+                              onPressed: callbacks?.showOptions,
+                              icon: Icon(
+                                Icons.more_horiz,
+                                size: 30,
+                              ),
                             ),
                           ],
                         ),
@@ -93,4 +102,18 @@ class RecordWidget extends StatelessWidget {
       ),
     );
   }
+}
+
+class RecordCallbacks {
+  final VoidCallback onTogglePlay;
+  final ValueChanged<Duration> seekBackward;
+  final ValueChanged<Duration> seekFroward;
+  final VoidCallback showOptions;
+
+  const RecordCallbacks({
+    required this.onTogglePlay,
+    required this.seekBackward,
+    required this.seekFroward,
+    required this.showOptions,
+  });
 }

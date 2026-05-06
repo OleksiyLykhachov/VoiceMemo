@@ -2,7 +2,6 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:voice_memos/presentation/presentation.dart';
 
-import '../../bloc/bloc.dart';
 import '../waveform/waveform.dart';
 
 class RecorderOverlayContent extends StatelessWidget {

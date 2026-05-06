@@ -19,8 +19,6 @@ class HomePage extends StatelessWidget {
   ) async {
     final bloc = context.read<RecordsBloc>();
 
-    await Future.delayed(const Duration(milliseconds: 550));
-
     if (!context.mounted) {
       return;
     }
@@ -48,6 +46,11 @@ class HomePage extends StatelessWidget {
     return MultiBlocProvider(
       providers: [
         BlocProvider<RecorderBloc>(
+          create: (context) {
+            return context.getIt();
+          },
+        ),
+        BlocProvider<PlayerBloc>(
           create: (context) {
             return context.getIt();
           },
