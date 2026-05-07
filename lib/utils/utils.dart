@@ -9,3 +9,4 @@ export 'player_service/player_service.dart';
 export 'records_path_util.dart';
 export 'combine_latest_transformer.dart';
 export 'bloc_transformers.dart';
+export 'duration_formatter_extension.dart';

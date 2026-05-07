@@ -1,25 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:gap/gap.dart';
-import 'package:intl/intl.dart';
 
 import 'package:voice_memos/presentation/presentation.dart';
+import 'package:voice_memos/utils/utils.dart';
 
 class SaveRecordHeader extends StatelessWidget {
   final Duration duration;
 
   const SaveRecordHeader({required this.duration, super.key});
-
-  String _duration() {
-    final hours = duration.inHours;
-    final minutes = duration.inMinutes.remainder(60);
-    final seconds = duration.inSeconds.remainder(60);
-    final twoDigitsFormat = NumberFormat('00');
-
-    return '${hours == 0 ? '' : '$hours:'}'
-        '${twoDigitsFormat.format(minutes)}:'
-        '${twoDigitsFormat.format(seconds)}';
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -38,7 +27,7 @@ class SaveRecordHeader extends StatelessWidget {
             ),
             const Gap(8),
             Text(
-              'RECORDING CAPTURED  ·  ${_duration()}',
+              'RECORDING CAPTURED  ·  ${duration.getFormattedString()}',
               style: TextStyle(
                 fontSize: 10,
                 fontWeight: FontWeight.w600,
@@ -57,7 +46,6 @@ class SaveRecordHeader extends StatelessWidget {
             height: 35 / 40,
           ),
         ),
- 
       ],
     );
   }
