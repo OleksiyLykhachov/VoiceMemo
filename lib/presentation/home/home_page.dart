@@ -19,16 +19,19 @@ class HomePage extends StatelessWidget {
   ) async {
     final bloc = context.read<RecordsBloc>();
 
+    await Future.delayed(const Duration(milliseconds: 500));
+
     if (!context.mounted) {
       return;
     }
-
+    
     final name = await SaveRecordBottomSheet.show(
       context: context,
       duration: duration,
     );
 
     if (name == null) {
+      await file.delete();
       return;
     }
 

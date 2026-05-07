@@ -2,7 +2,6 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:voice_memos/domain/domain.dart';
-import 'package:voice_memos/presentation/dialogs/rename_record/rename_record.dart';
 import 'package:voice_memos/presentation/presentation.dart';
 
 import 'empty_home_poster.dart';
@@ -18,8 +17,6 @@ class Records extends StatelessWidget {
   });
 
   Future<void> _showOptions(BuildContext context, Record record) async {
-    final bloc = context.read<RecordsBloc>();
-
     final option = await RecordOptionsBottomSheet.show(context, record);
 
     if (option == null || !context.mounted) {
@@ -28,21 +25,37 @@ class Records extends StatelessWidget {
 
     switch (option) {
       case RecordOption.delete:
-        throw UnimplementedError();
+        return _onDelete(context, record);
       case RecordOption.rename:
-        final name = await RenameRecordDialog.show(
-          context,
-          record,
-        );
+        return _onRename(context, record);
+    }
+  }
 
-        if (name != null) {
-          bloc.add(
-            RecordsEvent.rename(
-              id: record.id,
-              name: name,
-            ),
-          );
-        }
+  Future<void> _onRename(BuildContext context, Record record) async {
+    final bloc = context.read<RecordsBloc>();
+
+    final name = await RenameRecordDialog.show(
+      context,
+      record,
+    );
+
+    if (name != null) {
+      bloc.add(
+        RecordsEvent.rename(
+          id: record.id,
+          name: name,
+        ),
+      );
+    }
+  }
+
+  Future<void> _onDelete(BuildContext context, Record record) async {
+    final bloc = context.read<RecordsBloc>();
+
+    final confirmed = await DeleteRecordDialog.show(context, record);
+
+    if (confirmed) {
+      bloc.add(RecordsEvent.delete(record.id));
     }
   }
 

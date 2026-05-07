@@ -26,6 +26,7 @@ class DialogContent extends StatelessWidget {
           style: VoiceMemosTextStyles.headlineLarge.copyWith(
             color: VoiceMemosColors.black,
           ),
+          textAlign: TextAlign.center,
           child: title,
         ),
         const Gap(8),
