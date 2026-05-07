@@ -2,6 +2,7 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:voice_memos/domain/domain.dart';
+import 'package:voice_memos/presentation/dialogs/rename_record/rename_record.dart';
 import 'package:voice_memos/presentation/presentation.dart';
 
 import 'empty_home_poster.dart';
@@ -16,7 +17,34 @@ class Records extends StatelessWidget {
     super.key,
   });
 
-  Future<void> _showOptions(BuildContext context, Record record) async {}
+  Future<void> _showOptions(BuildContext context, Record record) async {
+    final bloc = context.read<RecordsBloc>();
+
+    final option = await RecordOptionsBottomSheet.show(context, record);
+
+    if (option == null || !context.mounted) {
+      return;
+    }
+
+    switch (option) {
+      case RecordOption.delete:
+        throw UnimplementedError();
+      case RecordOption.rename:
+        final name = await RenameRecordDialog.show(
+          context,
+          record,
+        );
+
+        if (name != null) {
+          bloc.add(
+            RecordsEvent.rename(
+              id: record.id,
+              name: name,
+            ),
+          );
+        }
+    }
+  }
 
   RecordCallbacks? _getCallbacks(
     BuildContext context,

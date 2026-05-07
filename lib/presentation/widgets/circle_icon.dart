@@ -14,7 +14,7 @@ class CircleIcon extends StatelessWidget {
     this.background = VoiceMemosColors.faint,
     this.foreground = VoiceMemosColors.textDark,
     this.padding = const EdgeInsets.all(10),
-    required this.size,
+    this.size = 25,
     super.key,
   });
 
