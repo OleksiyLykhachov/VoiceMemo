@@ -18,14 +18,14 @@ void main() {
     name: 'Old name',
     createdAt: DateTime(2026, 1, 1),
     filePath: '/tmp/old.m4a',
-    duration: 1_000,
+    durationMs: 1_000,
   );
   final secondRecord = Record(
     id: 2,
     name: 'Second',
     createdAt: DateTime(2026, 1, 2),
     filePath: '/tmp/second.m4a',
-    duration: 2_000,
+    durationMs: 2_000,
   );
 
   setUpAll(() {
@@ -91,7 +91,7 @@ void main() {
             name: 'New record',
             createdAt: DateTime(2026, 1, 3),
             filePath: '/tmp/new.m4a',
-            duration: 3_000,
+            durationMs: 3_000,
           ),
         );
       },
@@ -112,7 +112,7 @@ void main() {
               name: 'New record',
               createdAt: DateTime(2026, 1, 3),
               filePath: '/tmp/new.m4a',
-              duration: 3_000,
+              durationMs: 3_000,
             ),
             existingRecord,
           ],
@@ -167,7 +167,7 @@ void main() {
               name: 'Renamed',
               createdAt: DateTime(2026, 1, 1),
               filePath: '/tmp/old.m4a',
-              duration: 1_000,
+              durationMs: 1_000,
             ),
             secondRecord,
           ],
@@ -198,7 +198,7 @@ void main() {
               name: 'Renamed',
               createdAt: DateTime(2026, 1, 1),
               filePath: '/tmp/old.m4a',
-              duration: 1_000,
+              durationMs: 1_000,
             ),
             secondRecord,
           ],

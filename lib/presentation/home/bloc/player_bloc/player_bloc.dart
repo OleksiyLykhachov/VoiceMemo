@@ -77,11 +77,13 @@ class PlayerBloc extends Bloc<PlayerEvent, PlayerState>
     _SeekForward event,
     Emitter<PlayerState> emit,
   ) async {
-    if (state.record == null) {
+    final record = state.record;
+
+    if (record == null) {
       return;
     }
 
-    final maxPosition = Duration(milliseconds: state.record!.duration);
+    final maxPosition = record.duration;
     final nextPosition = _playerService.position + event.duration;
 
     return handle(() async {

@@ -17,7 +17,6 @@ class RecordOptionsHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final dateFormat = DateFormat('MMM d');
-    final duration = Duration(milliseconds: record.duration);
 
     return Row(
       children: [
@@ -33,7 +32,7 @@ class RecordOptionsHeader extends StatelessWidget {
               ),
               const Gap(6),
               Text(
-                '${duration.getFormattedString()}  ·  ${dateFormat.format(record.createdAt)}'
+                '${record.duration.getFormattedString()}  ·  ${dateFormat.format(record.createdAt)}'
                     .toUpperCase(),
                 style: VoiceMemosTextStyles.labelSmall.copyWith(
                   color: VoiceMemosColors.textSecondary,

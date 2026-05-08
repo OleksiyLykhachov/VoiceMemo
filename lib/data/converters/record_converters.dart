@@ -21,7 +21,7 @@ class RecordConverter extends Converter<Record, RecordModel> {
       name: input.name,
       createdAt: input.createdAt,
       filePath: _pathUtil.toStoredPath(input.filePath),
-      duration: input.duration,
+      duration: input.durationMs,
     );
   }
 }
@@ -41,7 +41,7 @@ class RecordModelConverter extends Converter<RecordModel, Record> {
       name: input.name,
       createdAt: input.createdAt,
       filePath: _pathUtil.resolveStoredPath(input.filePath),
-      duration: input.duration,
+      durationMs: input.duration,
     );
   }
 }

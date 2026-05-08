@@ -37,7 +37,7 @@ class RecordsBloc extends Bloc<RecordsEvent, RecordsState>
             name: event.name,
             filePath: event.file.path,
             createdAt: DateTime.now(),
-            duration: event.duration.inMilliseconds,
+            durationMs: event.duration.inMilliseconds,
           ),
         );
 

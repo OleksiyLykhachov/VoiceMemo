@@ -92,6 +92,12 @@ class Records extends StatelessWidget {
       return bloc.state.records;
     });
 
+    if (records.isEmpty) {
+      return Center(
+        child: EmptyHomePoster(),
+      );
+    }
+
     Widget recordBuilder(
       BuildContext context,
       int index,
@@ -111,18 +117,12 @@ class Records extends StatelessWidget {
           return RecordWidget(
             key: ValueKey(record.id),
             playing: recordState.playing,
-            progress: recordState.progress,
+            position: recordState.position,
             callbacks: _getCallbacks(context, active, record),
             record: record,
             animation: animation,
           );
         },
-      );
-    }
-
-    if (records.isEmpty) {
-      return Center(
-        child: EmptyHomePoster(),
       );
     }
 
@@ -141,14 +141,14 @@ class Records extends StatelessWidget {
   }
 }
 
-typedef RecordState = ({bool playing, double progress});
+typedef RecordState = ({bool playing, Duration position});
 
 extension on PlayerState {
   RecordState getRecordState(Record record) {
     if (this.record?.id == record.id) {
-      return (playing: playing, progress: progress);
+      return (playing: playing, position: position ?? Duration.zero);
     }
 
-    return (playing: false, progress: 0);
+    return (playing: false, position: Duration.zero);
   }
 }

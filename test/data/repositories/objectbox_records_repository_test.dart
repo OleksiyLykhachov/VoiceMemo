@@ -163,6 +163,6 @@ Record _record({
     name: name,
     createdAt: createdAt,
     filePath: '/tmp/$name.m4a',
-    duration: 42,
+    durationMs: 42,
   );
 }

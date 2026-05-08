@@ -12,13 +12,13 @@ class RecordWidget extends StatelessWidget {
   final Record record;
   final bool playing;
   final Animation<double>? animation;
-  final double? progress;
+  final Duration position;
   final RecordCallbacks? callbacks;
 
   const RecordWidget({
     required this.record,
     required this.playing,
-    this.progress,
+    this.position = Duration.zero,
     this.callbacks,
     this.animation,
     super.key,
@@ -27,7 +27,7 @@ class RecordWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return RecordBackground(
-      progress: progress ?? 0,
+      progress: record.getProgress(position),
       child: LayoutBuilder(
         builder: (context, constraints) {
           return Column(
@@ -78,7 +78,7 @@ class RecordWidget extends StatelessWidget {
                             Expanded(
                               child: Center(
                                 child: RecordDuration(
-                                  ms: record.duration,
+                                  record.duration - position,
                                 ),
                               ),
                             ),
@@ -116,4 +116,16 @@ class RecordCallbacks {
     required this.seekForward,
     required this.showOptions,
   });
+}
+
+extension on Record {
+  double getProgress(Duration position) {
+    if (durationMs <= 0) {
+      return 0;
+    }
+
+    final progress = (position.inMilliseconds) / durationMs;
+
+    return progress.clamp(0, 1);
+  }
 }
