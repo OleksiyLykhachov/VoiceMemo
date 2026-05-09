@@ -1,13 +1,10 @@
-import 'dart:async';
-
+import 'package:flutter/scheduler.dart';
 import 'package:flutter/widgets.dart';
 
 import 'package:voice_memos/presentation/presentation.dart';
 import 'package:voice_memos/utils/utils.dart';
 
 class RecordingDuration extends StatefulWidget {
-  static const _refreshInterval = Duration(milliseconds: 5);
-
   final DateTime startDateTime;
 
   const RecordingDuration(
@@ -19,23 +16,26 @@ class RecordingDuration extends StatefulWidget {
   State<RecordingDuration> createState() => _RecordingDurationState();
 }
 
-class _RecordingDurationState extends State<RecordingDuration> {
-  late Timer _timer;
-  late Duration _elapsed;
+class _RecordingDurationState extends State<RecordingDuration>
+    with SingleTickerProviderStateMixin {
+  late final Ticker _ticker;
+  late String _formattedElapsed;
 
   @override
   void initState() {
     super.initState();
-    _elapsed = _currentElapsed;
-    _timer = Timer.periodic(RecordingDuration._refreshInterval, (_) {
-      if (!mounted) {
-        return;
-      }
+    _formattedElapsed = _currentElapsed.getFormattedString(true);
+    _ticker =
+        createTicker((_) {
+          final formattedElapsed = _currentElapsed.getFormattedString(true);
+          if (formattedElapsed == _formattedElapsed || !mounted) {
+            return;
+          }
 
-      setState(() {
-        _elapsed = _currentElapsed;
-      });
-    });
+          setState(() {
+            _formattedElapsed = formattedElapsed;
+          });
+        })..start();
   }
 
   @override
@@ -46,12 +46,12 @@ class _RecordingDurationState extends State<RecordingDuration> {
       return;
     }
 
-    _elapsed = _currentElapsed;
+    _formattedElapsed = _currentElapsed.getFormattedString(true);
   }
 
   @override
   void dispose() {
-    _timer.cancel();
+    _ticker.dispose();
     super.dispose();
   }
 
@@ -62,7 +62,7 @@ class _RecordingDurationState extends State<RecordingDuration> {
   @override
   Widget build(BuildContext context) {
     return Text(
-      _elapsed.getFormattedString(true),
+      _formattedElapsed,
       style: VoiceMemosTextStyles.labelLarge.copyWith(
         color: VoiceMemosColors.textSecondary,
         fontFeatures: const [FontFeature.tabularFigures()],
