@@ -2,11 +2,13 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:nested/nested.dart';
 
 import 'package:voice_memos/presentation/presentation.dart';
 import 'package:voice_memos/utils/utils.dart';
 
 import 'widgets/home_content.dart';
+import 'widgets/home_blocs_wrapper.dart';
 import 'widgets/recorder_overlay/recorder_overlay.dart';
 
 class HomePage extends StatelessWidget {
@@ -19,6 +21,7 @@ class HomePage extends StatelessWidget {
   ) async {
     final bloc = context.read<RecordsBloc>();
 
+    // To finish recorder animation
     await Future.delayed(const Duration(milliseconds: 500));
 
     if (!context.mounted) {
@@ -46,40 +49,52 @@ class HomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MultiBlocProvider(
-      providers: [
-        BlocProvider<RecorderBloc>(
-          create: (context) {
-            return context.getIt();
-          },
-        ),
-        BlocProvider<PlayerBloc>(
-          create: (context) {
-            return context.getIt();
-          },
-        ),
-        BlocProvider<RecordsBloc>(
-          lazy: false,
-          create: (context) {
-            final bloc = context.getIt<RecordsBloc>();
-
-            bloc.add(const RecordsEvent.load());
-
-            return bloc;
-          },
-        ),
-      ],
-      child: BlocNotificationListener<RecorderNotification, RecorderBloc>(
-        listen: (context, notificaiton) {
-          notificaiton.whenOrNull(
-            recorded: (file, duration) {
-              _onNewRecord(context, file, duration);
+    return HomeBlocsWrapper(
+      child: Nested(
+        children: [
+          BlocNotificationListener<RecorderNotification, RecorderBloc>(
+            listen: (context, notificaiton) {
+              notificaiton.whenOrNull(
+                recorded: (file, duration) {
+                  _onNewRecord(context, file, duration);
+                },
+                noMicPermission: () {
+                  NoMicrophoneAccessDialog.show(context);
+                },
+                failure: (message) {
+                  context.showFailureToast(message);
+                },
+              );
             },
-            noMicPermission: () {
-              NoMicrophoneAccessDialog.show(context);
+          ),
+          BlocNotificationListener<RecordsNotification, RecordsBloc>(
+            listen: (context, notificaiton) {
+              notificaiton.whenOrNull(
+                failure: (message) {
+                  context.showFailureToast(message);
+                },
+                renamed: (record) {
+                  context.showSuccessToast(
+                    'Record renamed to "${record.name}"',
+                  );
+                },
+                deleted: (record) {
+                  context.showSuccessToast('Deleted "${record.name}"');
+                },
+              );
             },
-          );
-        },
+          ),
+
+          BlocNotificationListener<PlayerNotification, PlayerBloc>(
+            listen: (context, notificaiton) {
+              notificaiton.whenOrNull(
+                failure: (message) {
+                  context.showFailureToast(message);
+                },
+              );
+            },
+          ),
+        ],
         child: Scaffold(
           resizeToAvoidBottomInset: false,
           backgroundColor: VoiceMemosColors.background,

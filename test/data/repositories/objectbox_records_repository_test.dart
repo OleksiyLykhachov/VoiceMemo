@@ -12,6 +12,7 @@ void main() {
 
   Directory? tempDirectory;
   Store? store;
+  late RecordsPathUtil pathUtil;
   late ObjectBoxRecordsRepository repository;
 
   setUp(() async {
@@ -19,7 +20,7 @@ void main() {
       'objectbox_records_repository_test_',
     );
     store = await openStore(directory: tempDirectory!.path);
-    final pathUtil = RecordsPathUtil(documentsDirectory: tempDirectory!);
+    pathUtil = RecordsPathUtil(documentsDirectory: tempDirectory!);
     repository = ObjectBoxRecordsRepository(
       store: store!,
       recordConverter: RecordConverter(pathUtil: pathUtil),
@@ -85,6 +86,11 @@ void main() {
       await repository.save(firstRecord);
       await repository.save(secondRecord);
 
+      final firstRecordFile = await _createStoredRecordFile(
+        pathUtil: pathUtil,
+        record: firstRecord,
+      );
+
       final savedRecords = await repository.getRecords();
       final firstSavedRecord = savedRecords.singleWhere(
         (record) => record.name == firstRecord.name,
@@ -96,6 +102,7 @@ void main() {
 
       expect(records, hasLength(1));
       expect(records.single.name, secondRecord.name);
+      expect(await firstRecordFile.exists(), isFalse);
     });
 
     test('delete ignores missing ids', () async {
@@ -151,6 +158,18 @@ void main() {
       },
     );
   });
+}
+
+Future<File> _createStoredRecordFile({
+  required RecordsPathUtil pathUtil,
+  required Record record,
+}) async {
+  final file = File(
+    pathUtil.resolveStoredPath(pathUtil.toStoredPath(record.filePath)),
+  );
+  await file.parent.create(recursive: true);
+  await file.writeAsString('audio');
+  return file;
 }
 
 Record _record({

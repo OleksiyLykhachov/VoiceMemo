@@ -2,17 +2,15 @@ import 'dart:async';
 
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:nested/nested.dart';
 
 import 'bloc_notification_mixin.dart';
 
 typedef NotificationHandler<N> =
     void Function(BuildContext context, N notification);
 
-class BlocNotificationListener<
-  N,
-  B extends BlocNotificationMixin<N, Object?>
->
-    extends StatefulWidget {
+class BlocNotificationListener<N, B extends BlocNotificationMixin<N, Object?>>
+    extends SingleChildStatefulWidget {
   const BlocNotificationListener({
     super.key,
     this.child,
@@ -23,7 +21,7 @@ class BlocNotificationListener<
   final NotificationHandler<N> listen;
 
   @override
-  State<BlocNotificationListener<N, B>> createState() =>
+  SingleChildState<BlocNotificationListener<N, B>> createState() =>
       _BlocNotificationListenerState<N, B>();
 }
 
@@ -31,7 +29,7 @@ class _BlocNotificationListenerState<
   N,
   B extends BlocNotificationMixin<N, Object?>
 >
-    extends State<BlocNotificationListener<N, B>> {
+    extends SingleChildState<BlocNotificationListener<N, B>> {
   late final StreamSubscription<N> _subscription;
 
   @override
@@ -55,5 +53,10 @@ class _BlocNotificationListenerState<
   @override
   Widget build(BuildContext context) {
     return widget.child ?? const SizedBox.shrink();
+  }
+
+  @override
+  Widget buildWithChild(BuildContext context, Widget? child) {
+    return child ?? const SizedBox.shrink();
   }
 }

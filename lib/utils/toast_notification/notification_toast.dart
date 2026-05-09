@@ -31,7 +31,7 @@ class NotificationToast extends StatelessWidget {
       child: Row(
         children: [
           icon,
-          const Gap(8),
+          const Gap(16),
           Expanded(
             child: DefaultTextStyle(
               style: VoiceMemosTextStyles.bodyMedium.copyWith(

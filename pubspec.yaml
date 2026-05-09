@@ -31,6 +31,7 @@ dependencies:
   flutter_svg: ^2.2.4
   stream_transform: ^2.1.1
   app_settings: ^7.0.0
+  nested: ^1.0.0
 
 dev_dependencies:
   flutter_test:

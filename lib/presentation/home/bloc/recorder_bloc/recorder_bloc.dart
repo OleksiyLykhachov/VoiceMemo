@@ -27,54 +27,60 @@ class RecorderBloc extends Bloc<RecorderEvent, RecorderState>
   }
 
   FutureOr<void> _onStart(_Start event, Emitter<RecorderState> emit) {
-    return handle(() async {
-      if (state.recording) {
-        return;
-      }
+    return handle(
+      () async {
+        if (state.recording) {
+          return;
+        }
 
-      final hasPermission = await _recorderService.resolvePermission();
+        final hasPermission = await _recorderService.resolvePermission();
 
-      if (!hasPermission) {
-        emitNotification(const RecorderNotification.noMicPermission());
-        return;
-      }
+        if (!hasPermission) {
+          emitNotification(const RecorderNotification.noMicPermission());
+          return;
+        }
 
-      emit(state.copyWith(show: true));
+        emit(state.copyWith(show: true));
 
-      await _recorderService.start();
-      final stream = _recorderService.getAmplitudeStream();
+        await _recorderService.start();
+        final stream = _recorderService.getAmplitudeStream();
 
-      emit(
-        state.copyWith(
-          amplitudeStream: stream,
-          recording: true,
-          startedAt: DateTime.now(),
-        ),
-      );
-    });
+        emit(
+          state.copyWith(
+            amplitudeStream: stream,
+            recording: true,
+            startedAt: DateTime.now(),
+          ),
+        );
+      },
+      errorMessage: 'Failed to start recording',
+    );
   }
 
   FutureOr<void> _onStop(_Stop event, Emitter<RecorderState> emit) {
-    return handle(() async {
-      final stopDate = DateTime.now();
-      final recording = await _recorderService.stop();
+    return handle(
+      () async {
+        final stopDate = DateTime.now();
+        final recording = await _recorderService.stop();
 
-      emitNotification(
-        RecorderNotification.recorded(
-          recording.file,
-          recording.duration ?? stopDate.difference(state.startedAt!),
-        ),
-      );
+        emitNotification(
+          RecorderNotification.recorded(
+            recording.file,
+            recording.duration ?? stopDate.difference(state.startedAt!),
+          ),
+        );
 
-      emit(
-        state.copyWith(
-          show: false,
-          recording: false,
-          amplitudeStream: null,
-          startedAt: null,
-        ),
-      );
-    });
+        emit(
+          state.copyWith(
+            show: false,
+            recording: false,
+            amplitudeStream: null,
+            startedAt: null,
+          ),
+        );
+      },
+      errorMessage: 'Failed to create recording',
+    );
   }
 
   @override

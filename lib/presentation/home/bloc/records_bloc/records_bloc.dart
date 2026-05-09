@@ -24,36 +24,25 @@ class RecordsBloc extends Bloc<RecordsEvent, RecordsState>
     : _repository = repository,
       super(const RecordsState()) {
     on<_Save>(_onSave);
-    on<_Rename>(
-      _onRename,
-      transformer: sequential(),
-    );
-    on<_Delete>(
-      _onDelete,
-      transformer: sequential(),
-    );
-    on<_Load>(
-      _onLoad,
-      transformer: droppable(),
-    );
+    on<_Rename>(_onRename, transformer: sequential());
+    on<_Delete>(_onDelete, transformer: sequential());
+    on<_Load>(_onLoad, transformer: droppable());
   }
 
   FutureOr<void> _onSave(_Save event, Emitter<RecordsState> emit) {
-    return handle(
-      () async {
-        final record = await _repository.save(
-          Record(
-            id: 0,
-            name: event.name,
-            filePath: event.file.path,
-            createdAt: DateTime.now(),
-            durationMs: event.duration.inMilliseconds,
-          ),
-        );
+    return handle(() async {
+      final record = await _repository.save(
+        Record(
+          id: 0,
+          name: event.name,
+          filePath: event.file.path,
+          createdAt: DateTime.now(),
+          durationMs: event.duration.inMilliseconds,
+        ),
+      );
 
-        emit(state.copyWith(records: [record, ...state.records]));
-      },
-    );
+      emit(state.copyWith(records: [record, ...state.records]));
+    }, errorMessage: 'Could not save your recording. Please try again.');
   }
 
   FutureOr<void> _onRename(_Rename event, Emitter<RecordsState> emit) {
@@ -61,13 +50,15 @@ class RecordsBloc extends Bloc<RecordsEvent, RecordsState>
 
     return handle(
       () async {
-        final updatedRecords = state.records
-            .map(
-              (record) => record.id == event.id
-                  ? record.copyWith(name: event.name)
-                  : record,
-            )
-            .toList();
+        final updatedRecords =
+            state.records
+                .map(
+                  (record) =>
+                      record.id == event.id
+                          ? record.copyWith(name: event.name)
+                          : record,
+                )
+                .toList();
 
         emit(state.copyWith(records: updatedRecords));
 
@@ -75,10 +66,13 @@ class RecordsBloc extends Bloc<RecordsEvent, RecordsState>
           (record) => record.id == event.id,
         );
         await _repository.save(record);
+
+        emitNotification(RecordsNotification.renamed(record));
       },
       onFailure: (_) {
         emit(state.copyWith(records: oldRecords));
       },
+      errorMessage: 'Could not rename the recording. Please try again.',
     );
   }
 
@@ -94,6 +88,7 @@ class RecordsBloc extends Bloc<RecordsEvent, RecordsState>
       onFinally: () {
         emit(state.copyWith(loading: false));
       },
+      errorMessage: 'Could not load your recordings. Please try again.',
     );
   }
 
@@ -102,17 +97,22 @@ class RecordsBloc extends Bloc<RecordsEvent, RecordsState>
 
     return handle(
       () async {
-        final updatedRecords = state.records
-            .where((record) => record.id != event.id)
-            .toList();
+        final updatedRecords = [...state.records];
+
+        final record = updatedRecords.removeWhereAndReturn((item) {
+          return item.id == event.id;
+        });
 
         emit(state.copyWith(records: updatedRecords));
 
         await _repository.delete(event.id);
+
+        emitNotification(RecordsNotification.deleted(record));
       },
-      onFailure: (_) {
+      onFailure: (error) {
         emit(state.copyWith(records: oldRecords));
       },
+      errorMessage: 'Could not delete the recording. Please try again.',
     );
   }
 

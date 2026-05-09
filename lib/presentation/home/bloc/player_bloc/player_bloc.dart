@@ -53,7 +53,7 @@ class PlayerBloc extends Bloc<PlayerEvent, PlayerState>
       await _playerService.init(File(record.filePath));
 
       emit(PlayerState(record: record));
-    });
+    }, errorMessage: 'Could not open the recording. Please try again.');
   }
 
   FutureOr<void> _onTogglePlay(
@@ -64,13 +64,20 @@ class PlayerBloc extends Bloc<PlayerEvent, PlayerState>
       return;
     }
 
-    return handle(() async {
-      if (state.playing) {
-        await _playerService.pause();
-      } else {
-        await _playerService.play();
-      }
-    });
+    return handle(
+      () async {
+        if (state.playing) {
+          await _playerService.pause();
+        } else {
+          await _playerService.play();
+        }
+      },
+      buildMessage: (_) {
+        return state.playing
+            ? 'Could not pause the recording. Please try again.'
+            : 'Could not play the recording. Please try again.';
+      },
+    );
   }
 
   FutureOr<void> _onSeekForward(
@@ -90,7 +97,7 @@ class PlayerBloc extends Bloc<PlayerEvent, PlayerState>
       await _playerService.seek(
         nextPosition > maxPosition ? maxPosition : nextPosition,
       );
-    });
+    }, errorMessage: 'Could not skip forward. Please try again.');
   }
 
   FutureOr<void> _onSeekBackward(
@@ -107,7 +114,7 @@ class PlayerBloc extends Bloc<PlayerEvent, PlayerState>
       await _playerService.seek(
         nextPosition.isNegative ? Duration.zero : nextPosition,
       );
-    });
+    }, errorMessage: 'Could not skip backward. Please try again.');
   }
 
   @override

@@ -54,11 +54,15 @@ void main() {
       },
       build: () => RecordsBloc(repository: repository),
       act: (bloc) => bloc.add(const RecordsEvent.load()),
-      expect: () => [
-        const RecordsState(loading: true),
-        RecordsState(records: [existingRecord, secondRecord], loading: true),
-        RecordsState(records: [existingRecord, secondRecord]),
-      ],
+      expect:
+          () => [
+            const RecordsState(loading: true),
+            RecordsState(
+              records: [existingRecord, secondRecord],
+              loading: true,
+            ),
+            RecordsState(records: [existingRecord, secondRecord]),
+          ],
       verify: (_) {
         verify(() => repository.getRecords()).called(1);
       },
@@ -71,7 +75,9 @@ void main() {
       final notificationExpectation = expectLater(
         bloc.notificationStream,
         emits(
-          const RecordsNotification.failure('Something went wrong'),
+          const RecordsNotification.failure(
+            'Could not load your recordings. Please try again.',
+          ),
         ),
       );
 
@@ -97,27 +103,29 @@ void main() {
       },
       build: () => RecordsBloc(repository: repository),
       seed: () => RecordsState(records: [existingRecord]),
-      act: (bloc) => bloc.add(
-        RecordsEvent.save(
-          file: File('/tmp/new.m4a'),
-          name: 'New record',
-          duration: const Duration(seconds: 3),
-        ),
-      ),
-      expect: () => [
-        RecordsState(
-          records: [
-            Record(
-              id: 3,
+      act:
+          (bloc) => bloc.add(
+            RecordsEvent.save(
+              file: File('/tmp/new.m4a'),
               name: 'New record',
-              createdAt: DateTime(2026, 1, 3),
-              filePath: '/tmp/new.m4a',
-              durationMs: 3_000,
+              duration: const Duration(seconds: 3),
             ),
-            existingRecord,
+          ),
+      expect:
+          () => [
+            RecordsState(
+              records: [
+                Record(
+                  id: 3,
+                  name: 'New record',
+                  createdAt: DateTime(2026, 1, 3),
+                  filePath: '/tmp/new.m4a',
+                  durationMs: 3_000,
+                ),
+                existingRecord,
+              ],
+            ),
           ],
-        ),
-      ],
       verify: (_) {
         verify(() => repository.save(any())).called(1);
       },
@@ -130,7 +138,9 @@ void main() {
       final notificationExpectation = expectLater(
         bloc.notificationStream,
         emits(
-          const RecordsNotification.failure('Something went wrong'),
+          const RecordsNotification.failure(
+            'Could not save your recording. Please try again.',
+          ),
         ),
       );
 
@@ -156,23 +166,23 @@ void main() {
       },
       build: () => RecordsBloc(repository: repository),
       seed: () => RecordsState(records: [existingRecord, secondRecord]),
-      act: (bloc) => bloc.add(
-        const RecordsEvent.rename(id: 1, name: 'Renamed'),
-      ),
-      expect: () => [
-        RecordsState(
-          records: [
-            Record(
-              id: 1,
-              name: 'Renamed',
-              createdAt: DateTime(2026, 1, 1),
-              filePath: '/tmp/old.m4a',
-              durationMs: 1_000,
+      act:
+          (bloc) => bloc.add(const RecordsEvent.rename(id: 1, name: 'Renamed')),
+      expect:
+          () => [
+            RecordsState(
+              records: [
+                Record(
+                  id: 1,
+                  name: 'Renamed',
+                  createdAt: DateTime(2026, 1, 1),
+                  filePath: '/tmp/old.m4a',
+                  durationMs: 1_000,
+                ),
+                secondRecord,
+              ],
             ),
-            secondRecord,
           ],
-        ),
-      ],
       verify: (_) {
         verify(() => repository.save(any())).called(1);
       },
@@ -187,24 +197,24 @@ void main() {
       },
       build: () => RecordsBloc(repository: repository),
       seed: () => RecordsState(records: [existingRecord, secondRecord]),
-      act: (bloc) => bloc.add(
-        const RecordsEvent.rename(id: 1, name: 'Renamed'),
-      ),
-      expect: () => [
-        RecordsState(
-          records: [
-            Record(
-              id: 1,
-              name: 'Renamed',
-              createdAt: DateTime(2026, 1, 1),
-              filePath: '/tmp/old.m4a',
-              durationMs: 1_000,
+      act:
+          (bloc) => bloc.add(const RecordsEvent.rename(id: 1, name: 'Renamed')),
+      expect:
+          () => [
+            RecordsState(
+              records: [
+                Record(
+                  id: 1,
+                  name: 'Renamed',
+                  createdAt: DateTime(2026, 1, 1),
+                  filePath: '/tmp/old.m4a',
+                  durationMs: 1_000,
+                ),
+                secondRecord,
+              ],
             ),
-            secondRecord,
+            RecordsState(records: [existingRecord, secondRecord]),
           ],
-        ),
-        RecordsState(records: [existingRecord, secondRecord]),
-      ],
     );
 
     test('emits failure notification when rename fails', () async {
@@ -215,7 +225,9 @@ void main() {
       final notificationExpectation = expectLater(
         bloc.notificationStream,
         emits(
-          const RecordsNotification.failure('Something went wrong'),
+          const RecordsNotification.failure(
+            'Could not rename the recording. Please try again.',
+          ),
         ),
       );
 
@@ -233,9 +245,10 @@ void main() {
       build: () => RecordsBloc(repository: repository),
       seed: () => RecordsState(records: [existingRecord, secondRecord]),
       act: (bloc) => bloc.add(const RecordsEvent.delete(1)),
-      expect: () => [
-        RecordsState(records: [secondRecord]),
-      ],
+      expect:
+          () => [
+            RecordsState(records: [secondRecord]),
+          ],
       verify: (_) {
         verify(() => repository.delete(1)).called(1);
       },
@@ -249,10 +262,11 @@ void main() {
       build: () => RecordsBloc(repository: repository),
       seed: () => RecordsState(records: [existingRecord, secondRecord]),
       act: (bloc) => bloc.add(const RecordsEvent.delete(1)),
-      expect: () => [
-        RecordsState(records: [secondRecord]),
-        RecordsState(records: [existingRecord, secondRecord]),
-      ],
+      expect:
+          () => [
+            RecordsState(records: [secondRecord]),
+            RecordsState(records: [existingRecord, secondRecord]),
+          ],
     );
 
     test('emits failure notification when delete fails', () async {
@@ -263,7 +277,9 @@ void main() {
       final notificationExpectation = expectLater(
         bloc.notificationStream,
         emits(
-          const RecordsNotification.failure('Something went wrong'),
+          const RecordsNotification.failure(
+            'Could not delete the recording. Please try again.',
+          ),
         ),
       );
 
