@@ -1,5 +1,5 @@
 name: voice_memos
-description: "A new Flutter project."
+description: "A minimal Flutter voice recorder for quick local audio notes."
 publish_to: "none"
 
 version: 1.0.0+1
