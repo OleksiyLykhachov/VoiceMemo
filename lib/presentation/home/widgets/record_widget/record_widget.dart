@@ -40,10 +40,10 @@ class RecordWidget extends StatelessWidget {
                     animation: animation,
                     builder: (context, widget) {
                       return Transform.translate(
-                        offset: Tween(
-                          begin: Offset(0, constraints.maxHeight * 0.7),
-                          end: Offset.zero,
-                        ).evaluate(animation),
+                        offset: Offset(
+                          0,
+                          constraints.maxHeight * 0.7 * (1 - animation.value),
+                        ),
                         child: widget,
                       );
                     },
