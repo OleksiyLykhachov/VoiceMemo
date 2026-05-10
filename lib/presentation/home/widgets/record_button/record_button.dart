@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 import 'package:voice_memos/presentation/presentation.dart';
 
 import 'record_ring_painter.dart';
@@ -73,9 +74,8 @@ class _RecordButtonState extends State<RecordButton>
       enabled: true,
       toggled: widget.recording,
       label: 'Record memo',
-      hint: widget.recording
-          ? 'Tap to stop recording'
-          : 'Tap to start recording',
+      hint:
+          widget.recording ? 'Tap to stop recording' : 'Tap to start recording',
       child: SizedBox.square(
         dimension: RecordButton.size,
         child: GestureDetector(

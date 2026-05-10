@@ -2,10 +2,7 @@ class RecordingException implements Exception {
   final String message;
   final RecordingExceptionType type;
 
-  const RecordingException({
-    required this.message,
-    required this.type,
-  });
+  const RecordingException({required this.message, required this.type});
 
   const RecordingException.permission()
     : type = RecordingExceptionType.permissionNotGranted,

@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
-import 'package:voice_memos/presentation/styles/styles.dart';
 
-import '../../bloc/bloc.dart';
-import 'recording_duration.dart';
-import 'record_panel_shape_painter.dart';
+import 'package:voice_memos/presentation/presentation.dart';
+
 import '../record_button/record_button.dart';
+import 'record_panel_shape_painter.dart';
+import 'recording_duration.dart';
 
 class RecordPanel extends StatelessWidget {
   static const defaultMinHeight = 170.0;
@@ -66,10 +66,12 @@ class _RecordPanelButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final show = context.select((RecorderBloc bloc) => bloc.state.show);
+    final recording = context.select(
+      (RecorderBloc bloc) => bloc.state.recording,
+    );
 
     return RecordButton(
-      recording: show,
+      recording: recording,
       onTap: () {
         HapticFeedback.mediumImpact();
 
@@ -123,7 +125,7 @@ class _IdleHint extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Text(
-      'Hold to record a new memo',
+      'Tap to record a new memo',
       style: VoiceMemosTextStyles.bodySmall.copyWith(
         color: VoiceMemosColors.textSecondary,
       ),

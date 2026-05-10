@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 import 'package:voice_memos/presentation/presentation.dart';
 
 class RedShape extends StatelessWidget {
@@ -10,11 +11,7 @@ class RedShape extends StatelessWidget {
   final bool recording;
   final double size;
 
-  const RedShape({
-    required this.recording,
-    required this.size,
-    super.key,
-  });
+  const RedShape({required this.recording, required this.size, super.key});
 
   @override
   Widget build(BuildContext context) {

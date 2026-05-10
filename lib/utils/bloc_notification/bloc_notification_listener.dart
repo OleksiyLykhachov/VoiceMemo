@@ -11,11 +11,7 @@ typedef NotificationHandler<N> =
 
 class BlocNotificationListener<N, B extends BlocNotificationMixin<N, Object?>>
     extends SingleChildStatefulWidget {
-  const BlocNotificationListener({
-    super.key,
-    this.child,
-    required this.listen,
-  });
+  const BlocNotificationListener({super.key, this.child, required this.listen});
 
   final Widget? child;
   final NotificationHandler<N> listen;

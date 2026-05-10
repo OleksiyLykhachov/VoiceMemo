@@ -51,10 +51,7 @@ class _RecordsStackState extends State<RecordsStack>
 
   static final _curve = CurveTween(curve: Curves.easeOut);
 
-  static final _scaleTween = Tween<double>(
-    begin: 1.0,
-    end: 0.75,
-  ).chain(_curve);
+  static final _scaleTween = Tween<double>(begin: 1.0, end: 0.75).chain(_curve);
 
   static final _frontOpacityTween = Tween<double>(
     begin: 1.0,
@@ -161,12 +158,7 @@ class _RecordsStackState extends State<RecordsStack>
     _setControllerValue(currentPage);
     _notifyRecordChanged(target);
     _controller.animateWith(
-      SpringSimulation(
-        _spring,
-        currentPage,
-        target.toDouble(),
-        velocityPages,
-      ),
+      SpringSimulation(_spring, currentPage, target.toDouble(), velocityPages),
     );
   }
 
@@ -281,10 +273,7 @@ class _RecordsStackState extends State<RecordsStack>
       onVerticalDragStart: _onDragStart,
       onVerticalDragUpdate: _onDragUpdate,
       onVerticalDragEnd: _onDragEnd,
-      child: Stack(
-        clipBehavior: Clip.none,
-        children: _buildVisibleCards(),
-      ),
+      child: Stack(clipBehavior: Clip.none, children: _buildVisibleCards()),
     );
   }
 }

@@ -19,7 +19,7 @@ extension DurationFormatterX on Duration {
     }
 
     final centiseconds = (inMilliseconds ~/ 10).remainder(100);
-    
+
     return '$formatted,${numberFormat.format(centiseconds)}';
   }
 }

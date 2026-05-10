@@ -9,10 +9,7 @@ import 'package:voice_memos/utils/utils.dart';
 class RecordOptionsHeader extends StatelessWidget {
   final Record record;
 
-  const RecordOptionsHeader({
-    required this.record,
-    super.key,
-  });
+  const RecordOptionsHeader({required this.record, super.key});
 
   @override
   Widget build(BuildContext context) {

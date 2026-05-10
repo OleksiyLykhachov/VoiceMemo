@@ -82,12 +82,14 @@ class WaveformTimelineController {
     _lastRenderedAmplitude = nextLeftAmplitude;
 
     // Left lane keeps oldest->newest ordering, so the newest live bar is last.
-    final nextLeftBars = List<double>.from(frame.leftBars)
-      ..removeAt(0)
-      ..add(nextLeftAmplitude);
-    final nextRightBars = List<double>.from(frame.rightBars)
-      ..removeAt(0)
-      ..add(rightBaselineAmplitude);
+    final nextLeftBars =
+        List<double>.from(frame.leftBars)
+          ..removeAt(0)
+          ..add(nextLeftAmplitude);
+    final nextRightBars =
+        List<double>.from(frame.rightBars)
+          ..removeAt(0)
+          ..add(rightBaselineAmplitude);
 
     return WaveformFrame(leftBars: nextLeftBars, rightBars: nextRightBars);
   }
@@ -203,7 +205,10 @@ class WaveformGeometry {
     }
 
     final slotExtent = _defaultBarWidth + _defaultGap;
-    final barCount = math.max(1, ((laneWidth + _defaultGap) / slotExtent).floor());
+    final barCount = math.max(
+      1,
+      ((laneWidth + _defaultGap) / slotExtent).floor(),
+    );
     final freeSpace = math.max(0.0, laneWidth - (barCount * _defaultBarWidth));
     final resolvedGap = barCount <= 1 ? 0.0 : freeSpace / (barCount - 1);
 
@@ -229,15 +234,9 @@ class WaveformGeometry {
   }
 
   @override
-  int get hashCode => Object.hash(
-    barCountPerSide,
-    barWidth,
-    gap,
-    cursorWidth,
-    cursorInset,
-  );
+  int get hashCode =>
+      Object.hash(barCountPerSide, barWidth, gap, cursorWidth, cursorInset);
 }
-
 
 const ListEquality<double> _doubleListEquality = ListEquality<double>();
 

@@ -22,17 +22,8 @@ class CircleIcon extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       padding: padding,
-      decoration: BoxDecoration(
-        shape: BoxShape.circle,
-        color: background,
-      ),
-      child: Center(
-        child: Icon(
-          icon,
-          size: size,
-          color: foreground,
-        ),
-      ),
+      decoration: BoxDecoration(shape: BoxShape.circle, color: background),
+      child: Center(child: Icon(icon, size: size, color: foreground)),
     );
   }
 }

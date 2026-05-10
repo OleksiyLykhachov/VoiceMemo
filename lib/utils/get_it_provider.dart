@@ -14,6 +14,6 @@ class GetItProvider extends StatelessWidget {
   }
 }
 
-extension BuildContextGetItExtenstion on BuildContext {
+extension BuildContextGetItExtension on BuildContext {
   GetIt get getIt => read<GetIt>();
 }

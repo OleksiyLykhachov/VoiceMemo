@@ -7,8 +7,8 @@ import 'package:nested/nested.dart';
 import 'package:voice_memos/presentation/presentation.dart';
 import 'package:voice_memos/utils/utils.dart';
 
-import 'widgets/home_content.dart';
 import 'widgets/home_blocs_wrapper.dart';
+import 'widgets/home_content.dart';
 import 'widgets/recorder_overlay/recorder_overlay.dart';
 
 class HomePage extends StatelessWidget {
@@ -47,8 +47,8 @@ class HomePage extends StatelessWidget {
       child: Nested(
         children: [
           BlocNotificationListener<RecorderNotification, RecorderBloc>(
-            listen: (context, notificaiton) {
-              notificaiton.whenOrNull(
+            listen: (context, notification) {
+              notification.whenOrNull(
                 recordingStarted: () {
                   context.read<PlayerBloc>().add(const PlayerEvent.pause());
                 },
@@ -65,8 +65,8 @@ class HomePage extends StatelessWidget {
             },
           ),
           BlocNotificationListener<RecordsNotification, RecordsBloc>(
-            listen: (context, notificaiton) {
-              notificaiton.whenOrNull(
+            listen: (context, notification) {
+              notification.whenOrNull(
                 failure: (message) {
                   context.showFailureToast(message);
                 },
@@ -86,8 +86,8 @@ class HomePage extends StatelessWidget {
           ),
 
           BlocNotificationListener<PlayerNotification, PlayerBloc>(
-            listen: (context, notificaiton) {
-              notificaiton.whenOrNull(
+            listen: (context, notification) {
+              notification.whenOrNull(
                 failure: (message) {
                   context.showFailureToast(message);
                 },

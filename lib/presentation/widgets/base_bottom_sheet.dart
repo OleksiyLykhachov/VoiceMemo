@@ -6,10 +6,7 @@ import 'package:voice_memos/presentation/presentation.dart';
 class BaseBottomSheet extends StatelessWidget {
   final Widget child;
 
-  const BaseBottomSheet({
-    required this.child,
-    super.key,
-  });
+  const BaseBottomSheet({required this.child, super.key});
 
   static Future<T?> show<T>({
     required BuildContext context,
@@ -28,15 +25,10 @@ class BaseBottomSheet extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.symmetric(
-        horizontal: 22,
-        vertical: 14,
-      ),
+      padding: const EdgeInsets.symmetric(horizontal: 22, vertical: 14),
       decoration: BoxDecoration(
         color: VoiceMemosColors.white,
-        borderRadius: const BorderRadius.vertical(
-          top: Radius.circular(28),
-        ),
+        borderRadius: const BorderRadius.vertical(top: Radius.circular(28)),
       ),
       child: Column(
         mainAxisSize: MainAxisSize.min,

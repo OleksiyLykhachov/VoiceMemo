@@ -1,11 +1,12 @@
 import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
+
 import 'package:voice_memos/data/converters/record_converters.dart';
 import 'package:voice_memos/data/repositories/objectbox_records_repository.dart';
 import 'package:voice_memos/domain/domain.dart';
 import 'package:voice_memos/objectbox.g.dart';
-import 'package:voice_memos/utils/records_path_util.dart';
+import 'package:voice_memos/utils/utils.dart';
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
@@ -121,22 +122,25 @@ void main() {
       expect(records.single.name, record.name);
     });
 
-    test('delete removes a record even when its stored file is missing', () async {
-      final record = _record(
-        id: 0,
-        name: 'missing-file',
-        createdAt: DateTime(2024, 1, 1),
-      );
+    test(
+      'delete removes a record even when its stored file is missing',
+      () async {
+        final record = _record(
+          id: 0,
+          name: 'missing-file',
+          createdAt: DateTime(2024, 1, 1),
+        );
 
-      await repository.save(record);
+        await repository.save(record);
 
-      final savedRecord = (await repository.getRecords()).single;
+        final savedRecord = (await repository.getRecords()).single;
 
-      await repository.delete(savedRecord.id);
+        await repository.delete(savedRecord.id);
 
-      final records = await repository.getRecords();
-      expect(records, isEmpty);
-    });
+        final records = await repository.getRecords();
+        expect(records, isEmpty);
+      },
+    );
 
     test(
       'getRecordsStream emits current records immediately and updates on changes',

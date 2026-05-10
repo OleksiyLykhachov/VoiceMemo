@@ -5,19 +5,13 @@ import '../../../presentation.dart';
 class RecorderBackground extends StatelessWidget {
   final Animation<double> animation;
 
-  const RecorderBackground({
-    required this.animation,
-    super.key,
-  });
+  const RecorderBackground({required this.animation, super.key});
 
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.sizeOf(context);
     final offset = size.height * 0.05;
-    final bgSize = Size(
-      size.width,
-      size.height + offset,
-    );
+    final bgSize = Size(size.width, size.height + offset);
 
     return AnimatedBuilder(
       animation: animation,
@@ -27,22 +21,15 @@ class RecorderBackground extends StatelessWidget {
           end: 0.0,
         ).chain(CurveTween(curve: Curves.easeInOut)).evaluate(animation);
 
-        return Transform.translate(
-          offset: Offset(0, yOffset),
-          child: child!,
-        );
+        return Transform.translate(offset: Offset(0, yOffset), child: child!);
       },
 
       child: ClipPath(
-        clipper: RecorderBackgroundClipper(
-          offset: offset,
-        ),
+        clipper: RecorderBackgroundClipper(offset: offset),
         child: Container(
           height: bgSize.height,
           width: bgSize.width,
-          decoration: BoxDecoration(
-            color: VoiceMemosColors.black,
-          ),
+          decoration: BoxDecoration(color: VoiceMemosColors.black),
         ),
       ),
     );
@@ -52,10 +39,7 @@ class RecorderBackground extends StatelessWidget {
 class RecorderBackgroundClipper extends CustomClipper<Path> {
   final double offset;
 
-  const RecorderBackgroundClipper({
-    required this.offset,
-    super.reclip,
-  });
+  const RecorderBackgroundClipper({required this.offset, super.reclip});
 
   @override
   Path getClip(Size size) {
@@ -67,12 +51,7 @@ class RecorderBackgroundClipper extends CustomClipper<Path> {
     path.lineTo(0, size.height);
     path.lineTo(size.width, size.height);
     path.lineTo(size.width, offset);
-    path.quadraticBezierTo(
-      size.width / 2,
-      0,
-      0,
-      offset,
-    );
+    path.quadraticBezierTo(size.width / 2, 0, 0, offset);
 
     return path;
   }

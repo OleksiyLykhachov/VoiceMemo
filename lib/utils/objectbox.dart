@@ -8,7 +8,9 @@ const _databaseDirectoryName = 'voice-memos-db';
 
 Future<Store> createObjectBoxStore() async {
   final documentsDirectory = await getApplicationDocumentsDirectory();
-  return openStore(directory: p.join(documentsDirectory.path, _databaseDirectoryName));
+  return openStore(
+    directory: p.join(documentsDirectory.path, _databaseDirectoryName),
+  );
 }
 
 @module

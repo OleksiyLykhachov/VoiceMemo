@@ -28,9 +28,7 @@ class RecordOptionItem extends StatelessWidget {
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
           color: colors.background,
-          borderRadius: const BorderRadius.all(
-            Radius.circular(16),
-          ),
+          borderRadius: const BorderRadius.all(Radius.circular(16)),
           border: Border.all(color: colors.border),
         ),
         child: Row(
@@ -63,11 +61,7 @@ class RecordOptionItem extends StatelessWidget {
                 ],
               ),
             ),
-            Icon(
-              CupertinoIcons.forward,
-              size: 23,
-              color: colors.arrow,
-            ),
+            Icon(CupertinoIcons.forward, size: 23, color: colors.arrow),
           ],
         ),
       ),

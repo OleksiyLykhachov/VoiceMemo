@@ -25,19 +25,14 @@ abstract class VoiceMemosTextStyles {
     fontWeight: FontWeight.w700,
   );
 
-  static const bodyLarge = TextStyle(
-    fontSize: 16,
-    fontWeight: FontWeight.w500,
-  );
+  static const bodyLarge = TextStyle(fontSize: 16, fontWeight: FontWeight.w500);
 
   static const bodyMedium = TextStyle(
     fontSize: 15,
     fontWeight: FontWeight.w500,
   );
 
-  static const bodySmall = TextStyle(
-    fontSize: 12,
-  );
+  static const bodySmall = TextStyle(fontSize: 12);
 
   static const labelLarge = TextStyle(
     fontSize: 14,

@@ -35,10 +35,7 @@ class SaveRecordHeader extends StatelessWidget {
           ],
         ),
         const Gap(8),
-        Text(
-          'NAME YOUR\nMEMO',
-          style: VoiceMemosTextStyles.displayLarge,
-        ),
+        Text('NAME YOUR\nMEMO', style: VoiceMemosTextStyles.displayLarge),
       ],
     );
   }

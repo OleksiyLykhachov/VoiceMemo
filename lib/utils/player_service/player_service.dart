@@ -15,8 +15,8 @@ abstract interface class PlayerService {
 
   Future<void> dispose();
 
-  Stream<PlayerState> get stateStream;
-  PlayerState get playerState;
+  Stream<PlaybackState> get stateStream;
+  PlaybackState get playbackState;
   Duration? get duration;
   Duration get position;
 }
@@ -27,9 +27,7 @@ class PlayerServiceImpl implements PlayerService {
 
   late final StreamSubscription<ja.ProcessingState> _stateSub;
 
-  PlayerServiceImpl({
-    required ja.AudioPlayer player,
-  }) : _player = player {
+  PlayerServiceImpl({required ja.AudioPlayer player}) : _player = player {
     _stateSub = _player.processingStateStream.listen((state) {
       if (state == ja.ProcessingState.completed) {
         _player.stop();
@@ -40,10 +38,7 @@ class PlayerServiceImpl implements PlayerService {
 
   @override
   Future<void> dispose() {
-    return Future.wait([
-      _stateSub.cancel(),
-      _player.dispose(),
-    ]);
+    return Future.wait([_stateSub.cancel(), _player.dispose()]);
   }
 
   Stream<Duration> get positionStream {
@@ -90,31 +85,23 @@ class PlayerServiceImpl implements PlayerService {
   Duration get position => _player.position;
 
   @override
-  PlayerState get playerState {
-    return PlayerState(
-      playing: _player.playing,
-      position: _player.position,
-    );
+  PlaybackState get playbackState {
+    return PlaybackState(playing: _player.playing, position: _player.position);
   }
 
   @override
-  Stream<PlayerState> get stateStream {
+  Stream<PlaybackState> get stateStream {
     return _player.positionStream.combineLatestWith(
       _player.playerStateStream,
-      (position, playerState) => PlayerState(
-        playing: playerState.playing,
-        position: position,
-      ),
+      (position, audioState) =>
+          PlaybackState(playing: audioState.playing, position: position),
     );
   }
 }
 
-class PlayerState {
+class PlaybackState {
   final bool playing;
   final Duration position;
 
-  PlayerState({
-    required this.playing,
-    required this.position,
-  });
+  PlaybackState({required this.playing, required this.position});
 }

@@ -12,9 +12,7 @@ class RecordTitle extends StatelessWidget {
       _preferBalancedWrap(text),
       textAlign: TextAlign.center,
       maxLines: 2,
-      style: VoiceMemosTextStyles.titleLarge.copyWith(
-        height: 20 / 21,
-      ),
+      style: VoiceMemosTextStyles.titleLarge.copyWith(height: 20 / 21),
     );
   }
 }

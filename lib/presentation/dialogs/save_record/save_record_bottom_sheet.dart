@@ -10,10 +10,7 @@ import 'widgets/save_record_header.dart';
 class SaveRecordBottomSheet extends StatefulWidget {
   final Duration duration;
 
-  const SaveRecordBottomSheet({
-    super.key,
-    required this.duration,
-  });
+  const SaveRecordBottomSheet({super.key, required this.duration});
 
   static Future<String?> show({
     required BuildContext context,
@@ -64,9 +61,7 @@ class _SaveRecordBottomSheetState extends State<SaveRecordBottomSheet> {
               textCapitalization: TextCapitalization.sentences,
               maxLength: 40,
               buildCounter: textFieldCounterBuilder,
-              decoration: InputDecoration(
-                hintText: 'Name your memo',
-              ),
+              decoration: InputDecoration(hintText: 'Name your memo'),
             ),
             const Gap(16),
             NameSuggestionChips(

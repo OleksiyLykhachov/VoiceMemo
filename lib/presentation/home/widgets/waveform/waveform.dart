@@ -3,6 +3,7 @@ import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+
 import 'package:voice_memos/presentation/presentation.dart';
 import 'package:voice_memos/utils/utils.dart';
 
@@ -10,10 +11,7 @@ import 'waveform_painter.dart';
 import 'waveform_timeline_controller.dart';
 
 class Waveform extends StatefulWidget {
-  const Waveform({
-    required this.stream,
-    super.key,
-  });
+  const Waveform({required this.stream, super.key});
 
   final Stream<AmplitudeData>? stream;
 
@@ -36,15 +34,14 @@ class _WaveformState extends State<Waveform>
   void initState() {
     super.initState();
     _timelineController = WaveformTimelineController()..reset();
-    _shiftController =
-        AnimationController(
-          vsync: this,
-          duration: _shiftAnimationDuration,
-        )..addStatusListener((status) {
-          if (status == AnimationStatus.completed) {
-            _commitShiftAndContinue();
-          }
-        });
+    _shiftController = AnimationController(
+      vsync: this,
+      duration: _shiftAnimationDuration,
+    )..addStatusListener((status) {
+      if (status == AnimationStatus.completed) {
+        _commitShiftAndContinue();
+      }
+    });
     _subscribeToStream(widget.stream);
   }
 
@@ -199,9 +196,8 @@ class _WaveformState extends State<Waveform>
     }
 
     final maxLinear = _dbToLinear(max);
-    final normalized = maxLinear > 0
-        ? (currentLinear / maxLinear)
-        : currentLinear;
+    final normalized =
+        maxLinear > 0 ? (currentLinear / maxLinear) : currentLinear;
     if (!normalized.isFinite) {
       return kWaveformMinAmplitude;
     }
@@ -254,10 +250,7 @@ class _WaveformState extends State<Waveform>
 class _MeasureSize extends SingleChildRenderObjectWidget {
   final ValueChanged<Size> onChange;
 
-  const _MeasureSize({
-    required this.onChange,
-    required super.child,
-  });
+  const _MeasureSize({required this.onChange, required super.child});
 
   @override
   RenderObject createRenderObject(BuildContext context) {

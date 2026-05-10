@@ -2,15 +2,12 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 
-import 'package:voice_memos/presentation/presentation.dart';
 import 'package:voice_memos/domain/domain.dart';
+import 'package:voice_memos/presentation/presentation.dart';
 
 class RenameRecordDialog extends StatefulWidget {
   final Record record;
-  const RenameRecordDialog({
-    required this.record,
-    super.key,
-  });
+  const RenameRecordDialog({required this.record, super.key});
 
   static Future<String?> show(BuildContext context, Record record) {
     return BaseDialog.show<String>(
@@ -31,9 +28,7 @@ class _RenameRecordDialogState extends State<RenameRecordDialog> {
   @override
   void initState() {
     super.initState();
-    _controller = TextEditingController(
-      text: widget.record.name,
-    );
+    _controller = TextEditingController(text: widget.record.name);
   }
 
   @override
@@ -63,9 +58,7 @@ class _RenameRecordDialogState extends State<RenameRecordDialog> {
               autofocus: true,
               maxLength: 40,
               buildCounter: textFieldCounterBuilder,
-              decoration: InputDecoration(
-                hintText: 'Memo name',
-              ),
+              decoration: InputDecoration(hintText: 'Memo name'),
             ),
             const Gap(16),
             Row(
@@ -85,11 +78,12 @@ class _RenameRecordDialogState extends State<RenameRecordDialog> {
                     builder: (context, value, child) {
                       final name = value.text.trim();
                       return FilledButton(
-                        onPressed: name.isEmpty
-                            ? null
-                            : () {
-                                Navigator.of(context).pop(name);
-                              },
+                        onPressed:
+                            name.isEmpty
+                                ? null
+                                : () {
+                                  Navigator.of(context).pop(name);
+                                },
                         child: child,
                       );
                     },

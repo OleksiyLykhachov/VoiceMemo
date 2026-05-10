@@ -5,7 +5,7 @@ abstract class RecorderState with _$RecorderState {
   const factory RecorderState({
     Stream<AmplitudeData>? amplitudeStream,
     @Default(false) bool recording,
-    @Default(false) bool show,
+    @Default(false) bool overlayVisible,
     DateTime? startedAt,
   }) = _RecorderState;
 }

@@ -7,10 +7,7 @@ import 'package:voice_memos/utils/utils.dart';
 class RecordingDuration extends StatefulWidget {
   final DateTime startDateTime;
 
-  const RecordingDuration(
-    this.startDateTime, {
-    super.key,
-  });
+  const RecordingDuration(this.startDateTime, {super.key});
 
   @override
   State<RecordingDuration> createState() => _RecordingDurationState();
@@ -25,17 +22,16 @@ class _RecordingDurationState extends State<RecordingDuration>
   void initState() {
     super.initState();
     _formattedElapsed = _currentElapsed.getFormattedString(true);
-    _ticker =
-        createTicker((_) {
-          final formattedElapsed = _currentElapsed.getFormattedString(true);
-          if (formattedElapsed == _formattedElapsed || !mounted) {
-            return;
-          }
+    _ticker = createTicker((_) {
+      final formattedElapsed = _currentElapsed.getFormattedString(true);
+      if (formattedElapsed == _formattedElapsed || !mounted) {
+        return;
+      }
 
-          setState(() {
-            _formattedElapsed = formattedElapsed;
-          });
-        })..start();
+      setState(() {
+        _formattedElapsed = formattedElapsed;
+      });
+    })..start();
   }
 
   @override

@@ -11,10 +11,7 @@ import 'records_stack.dart';
 class Records extends StatelessWidget {
   final double cardRadius;
 
-  const Records({
-    required this.cardRadius,
-    super.key,
-  });
+  const Records({required this.cardRadius, super.key});
 
   Future<void> _showOptions(BuildContext context, Record record) async {
     final option = await RecordOptionsBottomSheet.show(context, record);
@@ -34,18 +31,10 @@ class Records extends StatelessWidget {
   Future<void> _onRename(BuildContext context, Record record) async {
     final bloc = context.read<RecordsBloc>();
 
-    final name = await RenameRecordDialog.show(
-      context,
-      record,
-    );
+    final name = await RenameRecordDialog.show(context, record);
 
     if (name != null) {
-      bloc.add(
-        RecordsEvent.rename(
-          id: record.id,
-          name: name,
-        ),
-      );
+      bloc.add(RecordsEvent.rename(id: record.id, name: name));
     }
   }
 
@@ -72,9 +61,7 @@ class Records extends StatelessWidget {
 
     return RecordCallbacks(
       onTogglePlay: () {
-        bloc.add(
-          PlayerEvent.togglePlay(),
-        );
+        bloc.add(PlayerEvent.togglePlay());
       },
       seekBackward: (value) {
         bloc.add(PlayerEvent.seekBackward(value));
@@ -93,9 +80,7 @@ class Records extends StatelessWidget {
     });
 
     if (records.isEmpty) {
-      return Center(
-        child: EmptyHomePoster(),
-      );
+      return Center(child: EmptyHomePoster());
     }
 
     Widget recordBuilder(
@@ -108,9 +93,7 @@ class Records extends StatelessWidget {
 
       return Builder(
         builder: (context) {
-          final recordState = context.select((
-            PlayerBloc bloc,
-          ) {
+          final recordState = context.select((PlayerBloc bloc) {
             return bloc.state.getRecordState(record);
           });
 
@@ -132,9 +115,7 @@ class Records extends StatelessWidget {
       cardOffset: cardRadius * 0.25,
       onRecordChanged: (index) {
         final record = records[index];
-        context.read<PlayerBloc>().add(
-          PlayerEvent.setRecord(record),
-        );
+        context.read<PlayerBloc>().add(PlayerEvent.setRecord(record));
       },
       builder: recordBuilder,
     );

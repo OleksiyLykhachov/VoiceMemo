@@ -4,8 +4,9 @@ import 'dart:io';
 import 'package:bloc/bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:injectable/injectable.dart';
-import 'package:voice_memos/utils/utils.dart';
+
 import 'package:voice_memos/domain/domain.dart';
+import 'package:voice_memos/utils/utils.dart';
 
 part 'player_event.dart';
 part 'player_state.dart';

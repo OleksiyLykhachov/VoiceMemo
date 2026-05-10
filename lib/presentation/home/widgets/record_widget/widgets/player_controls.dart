@@ -30,10 +30,7 @@ class PlayerControls extends StatelessWidget {
             path: Assets.backward10,
           ),
         ),
-        PlayButton(
-          onTap: () => onTogglePlay?.call(),
-          playing: playing,
-        ),
+        PlayButton(onTap: () => onTogglePlay?.call(), playing: playing),
         Expanded(
           child: _IconButton(
             onTap: () => onForward?.call(_duration),
@@ -49,11 +46,7 @@ class PlayButton extends StatelessWidget {
   final bool playing;
   final VoidCallback onTap;
 
-  const PlayButton({
-    required this.playing,
-    required this.onTap,
-    super.key,
-  });
+  const PlayButton({required this.playing, required this.onTap, super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -81,19 +74,13 @@ class _IconButton extends StatelessWidget {
   final String path;
   final VoidCallback onTap;
 
-  const _IconButton({
-    required this.onTap,
-    required this.path,
-  });
+  const _IconButton({required this.onTap, required this.path});
 
   @override
   Widget build(BuildContext context) {
     return SizedBox.square(
       dimension: 35,
-      child: Tappable(
-        onTap: onTap,
-        child: SvgPicture.asset(path),
-      ),
+      child: Tappable(onTap: onTap, child: SvgPicture.asset(path)),
     );
   }
 }

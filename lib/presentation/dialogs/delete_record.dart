@@ -8,10 +8,7 @@ import 'package:voice_memos/presentation/presentation.dart';
 class DeleteRecordDialog extends StatelessWidget {
   final Record record;
 
-  const DeleteRecordDialog({
-    required this.record,
-    super.key,
-  });
+  const DeleteRecordDialog({required this.record, super.key});
 
   static Future<bool> show(BuildContext context, Record record) async {
     final confirmed = await BaseDialog.show<bool>(

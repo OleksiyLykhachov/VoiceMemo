@@ -4,18 +4,12 @@ import 'package:stream_transform/stream_transform.dart';
 
 EventTransformer<E> debounceThenSequential<E>(Duration duration) {
   return (events, mapper) {
-    return sequential<E>().call(
-      events.debounce(duration),
-      mapper,
-    );
+    return sequential<E>().call(events.debounce(duration), mapper);
   };
 }
 
 EventTransformer<E> debounceRestartable<E>(Duration duration) {
   return (events, mapper) {
-    return restartable<E>().call(
-      events.debounce(duration),
-      mapper,
-    );
+    return restartable<E>().call(events.debounce(duration), mapper);
   };
 }

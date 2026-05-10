@@ -1,5 +1,6 @@
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+
 import 'package:voice_memos/utils/utils.dart';
 
 import '../bloc/bloc.dart';
@@ -7,10 +8,7 @@ import '../bloc/bloc.dart';
 class HomeBlocsWrapper extends StatelessWidget {
   final Widget child;
 
-  const HomeBlocsWrapper({
-    required this.child,
-    super.key,
-  });
+  const HomeBlocsWrapper({required this.child, super.key});
 
   @override
   Widget build(BuildContext context) {

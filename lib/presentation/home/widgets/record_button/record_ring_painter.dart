@@ -21,10 +21,11 @@ class RecordRingPainter extends CustomPainter {
       return;
     }
 
-    final paint = Paint()
-      ..color = color
-      ..style = PaintingStyle.fill
-      ..isAntiAlias = true;
+    final paint =
+        Paint()
+          ..color = color
+          ..style = PaintingStyle.fill
+          ..isAntiAlias = true;
 
     final center = size.center(Offset.zero);
     final diameter = size.shortestSide;

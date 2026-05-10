@@ -16,9 +16,7 @@ ThemeData themeData() {
     chipTheme: ChipThemeData(
       backgroundColor: VoiceMemosColors.white,
       shape: RoundedRectangleBorder(
-        borderRadius: const BorderRadiusGeometry.all(
-          Radius.circular(25),
-        ),
+        borderRadius: const BorderRadiusGeometry.all(Radius.circular(25)),
       ),
     ),
     textTheme: const TextTheme(
@@ -54,26 +52,18 @@ ThemeData themeData() {
 }
 
 InputDecorationTheme inputDecorationTheme() {
-  const borderSide = BorderSide(
-    color: VoiceMemosColors.black,
-    width: 2,
-  );
+  const borderSide = BorderSide(color: VoiceMemosColors.black, width: 2);
 
   final borderRadius = BorderRadius.circular(12);
 
   return InputDecorationTheme(
-    contentPadding: const EdgeInsets.symmetric(
-      horizontal: 16,
-      vertical: 14,
-    ),
+    contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
     hintStyle: VoiceMemosTextStyles.bodyLarge.copyWith(
       color: VoiceMemosColors.textSecondary,
     ),
     enabledBorder: OutlineInputBorder(
       borderRadius: BorderRadius.circular(12),
-      borderSide: borderSide.copyWith(
-        color: VoiceMemosColors.textSecondary,
-      ),
+      borderSide: borderSide.copyWith(color: VoiceMemosColors.textSecondary),
     ),
     focusedBorder: OutlineInputBorder(
       borderRadius: borderRadius,

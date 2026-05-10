@@ -6,10 +6,7 @@ import 'package:voice_memos/utils/utils.dart';
 class RecordDuration extends StatelessWidget {
   final Duration duration;
 
-  const RecordDuration(
-    this.duration, {
-    super.key,
-  });
+  const RecordDuration(this.duration, {super.key});
 
   @override
   Widget build(BuildContext context) {

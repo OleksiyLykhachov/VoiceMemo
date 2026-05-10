@@ -8,23 +8,14 @@ import 'package:voice_memos/presentation/presentation.dart';
 import 'widgets/record_option_item.dart';
 import 'widgets/record_options_header.dart';
 
-enum RecordOption {
-  delete,
-  rename,
-}
+enum RecordOption { delete, rename }
 
 class RecordOptionsBottomSheet extends StatelessWidget {
   final Record record;
 
-  const RecordOptionsBottomSheet({
-    required this.record,
-    super.key,
-  });
+  const RecordOptionsBottomSheet({required this.record, super.key});
 
-  static Future<RecordOption?> show(
-    BuildContext context,
-    Record record,
-  ) {
+  static Future<RecordOption?> show(BuildContext context, Record record) {
     return BaseBottomSheet.show(
       context: context,
       builder: (context) {
@@ -45,15 +36,9 @@ class RecordOptionsBottomSheet extends StatelessWidget {
         children: [
           SizedBox(
             width: double.infinity,
-            child: RecordOptionsHeader(
-              record: record,
-            ),
+            child: RecordOptionsHeader(record: record),
           ),
-          Divider(
-            color: VoiceMemosColors.border,
-            height: 32,
-            thickness: 1,
-          ),
+          Divider(color: VoiceMemosColors.border, height: 32, thickness: 1),
           RecordOptionItem(
             onTap: () => _select(context, RecordOption.rename),
             colors: RecordOptionColors.standard(),

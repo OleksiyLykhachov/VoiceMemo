@@ -2,18 +2,10 @@ import 'package:flutter/material.dart';
 
 class NameSuggestionChips extends StatelessWidget {
   final ValueChanged<String> onSelected;
-  
-  const NameSuggestionChips({
-    required this.onSelected,
-    super.key,
-  });
 
-  static const _suggestions = [
-    'Idea',
-    'Meeting',
-    'Note to self',
-    'Lyric',
-  ];
+  const NameSuggestionChips({required this.onSelected, super.key});
+
+  static const _suggestions = ['Idea', 'Meeting', 'Note to self', 'Lyric'];
 
   @override
   Widget build(BuildContext context) {

@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 
-import 'widgets/record_background.dart';
 import 'package:voice_memos/domain/domain.dart';
 
-import 'widgets/record_title.dart';
-import 'widgets/record_duration.dart';
 import 'widgets/player_controls.dart';
+import 'widgets/record_background.dart';
+import 'widgets/record_duration.dart';
+import 'widgets/record_title.dart';
 
 class RecordWidget extends StatelessWidget {
   final Record record;
@@ -49,9 +49,7 @@ class RecordWidget extends StatelessWidget {
                     },
 
                     child: Padding(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 10,
-                      ),
+                      padding: const EdgeInsets.symmetric(horizontal: 10),
                       child: RecordTitle(record.name),
                     ),
                   ),
@@ -84,10 +82,7 @@ class RecordWidget extends StatelessWidget {
                             ),
                             IconButton(
                               onPressed: callbacks?.showOptions,
-                              icon: Icon(
-                                Icons.more_horiz,
-                                size: 30,
-                              ),
+                              icon: Icon(Icons.more_horiz, size: 30),
                             ),
                           ],
                         ),

@@ -5,10 +5,7 @@ import 'package:voice_memos/presentation/presentation.dart';
 class HomeBackground extends StatelessWidget {
   final Widget child;
 
-  const HomeBackground({
-    required this.child,
-    super.key,
-  });
+  const HomeBackground({required this.child, super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -23,10 +20,7 @@ class HomeBackground extends StatelessWidget {
           ),
         ),
         Expanded(
-          child: Transform.translate(
-            offset: Offset(0, -45),
-            child: child,
-          ),
+          child: Transform.translate(offset: Offset(0, -45), child: child),
         ),
       ],
     );

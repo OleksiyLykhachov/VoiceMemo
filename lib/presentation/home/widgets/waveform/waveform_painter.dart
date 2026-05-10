@@ -58,10 +58,11 @@ class WaveformPainter extends CustomPainter {
     Rect laneRect,
     double shiftDistance,
   ) {
-    final paint = Paint()
-      ..color = barColor
-      ..style = PaintingStyle.fill
-      ..isAntiAlias = true;
+    final paint =
+        Paint()
+          ..color = barColor
+          ..style = PaintingStyle.fill
+          ..isAntiAlias = true;
 
     final centerY = size.height / 2;
     final maxBarHeight = size.height * _maxBarHeightFactor;
@@ -90,7 +91,11 @@ class WaveformPainter extends CustomPainter {
         canvas,
         paint,
         amplitude: toFrame.leftBars.last,
-        dx: laneRect.right + geometry.slotExtent - geometry.barWidth - shiftDistance,
+        dx:
+            laneRect.right +
+            geometry.slotExtent -
+            geometry.barWidth -
+            shiftDistance,
         centerY: centerY,
         maxBarHeight: maxBarHeight,
       );
@@ -105,10 +110,11 @@ class WaveformPainter extends CustomPainter {
     Rect laneRect,
     double shiftDistance,
   ) {
-    final paint = Paint()
-      ..color = barColor.withValues(alpha: _rightLaneAlpha)
-      ..style = PaintingStyle.fill
-      ..isAntiAlias = true;
+    final paint =
+        Paint()
+          ..color = barColor.withValues(alpha: _rightLaneAlpha)
+          ..style = PaintingStyle.fill
+          ..isAntiAlias = true;
 
     final centerY = size.height / 2;
     final maxBarHeight = size.height * _maxBarHeightFactor;
@@ -133,7 +139,10 @@ class WaveformPainter extends CustomPainter {
         canvas,
         paint,
         amplitude: toFrame.rightBars.last,
-        dx: laneRect.left + (fromFrame.rightBars.length * geometry.slotExtent) - shiftDistance,
+        dx:
+            laneRect.left +
+            (fromFrame.rightBars.length * geometry.slotExtent) -
+            shiftDistance,
         centerY: centerY,
         maxBarHeight: maxBarHeight,
       );
@@ -163,17 +172,17 @@ class WaveformPainter extends CustomPainter {
   }
 
   double _barHeightForAmplitude(double amplitude, double maxBarHeight) {
-    final visualAmplitude =
-        math.pow(amplitude.clamp(0.0, 1.0), 0.65) as double;
+    final visualAmplitude = math.pow(amplitude.clamp(0.0, 1.0), 0.65) as double;
     return (_minBarHeight + ((maxBarHeight - _minBarHeight) * visualAmplitude))
         .clamp(_minBarHeight, maxBarHeight);
   }
 
   void _paintCursor(Canvas canvas, Size size, double centerX) {
-    final paint = Paint()
-      ..color = cursorColor
-      ..style = PaintingStyle.fill
-      ..isAntiAlias = true;
+    final paint =
+        Paint()
+          ..color = cursorColor
+          ..style = PaintingStyle.fill
+          ..isAntiAlias = true;
 
     final rect = RRect.fromRectAndRadius(
       Rect.fromCenter(

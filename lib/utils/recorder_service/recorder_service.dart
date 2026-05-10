@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:injectable/injectable.dart';
 import 'package:record/record.dart';
+
 import 'package:voice_memos/utils/utils.dart';
 
 import 'record_duration_util.dart';
@@ -12,7 +13,7 @@ export 'recording_exceptions.dart';
 export 'audio_recording.dart';
 
 abstract interface class RecorderService {
-  Future<bool> get isHasPermission;
+  Future<bool> get hasPermission;
   Future<bool> requestPermission();
   Future<bool> resolvePermission();
 
@@ -44,14 +45,11 @@ class RecorderServiceImpl implements RecorderService {
 
   @override
   Future<void> dispose() {
-    return Future.wait([
-      _recorder.dispose(),
-      _recordDuration.dispose(),
-    ]);
+    return Future.wait([_recorder.dispose(), _recordDuration.dispose()]);
   }
 
   @override
-  Future<bool> get isHasPermission {
+  Future<bool> get hasPermission {
     return _recorder.hasPermission(request: false);
   }
 
@@ -62,7 +60,7 @@ class RecorderServiceImpl implements RecorderService {
 
   @override
   Future<bool> resolvePermission() async {
-    if (await isHasPermission) {
+    if (await hasPermission) {
       return true;
     }
 

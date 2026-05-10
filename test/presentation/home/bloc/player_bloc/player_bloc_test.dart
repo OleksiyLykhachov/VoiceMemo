@@ -3,9 +3,10 @@ import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
+
 import 'package:voice_memos/domain/domain.dart';
-import 'package:voice_memos/presentation/home/bloc/bloc.dart';
-import 'package:voice_memos/utils/player_service/player_service.dart' as audio;
+import 'package:voice_memos/presentation/presentation.dart';
+import 'package:voice_memos/utils/utils.dart' as audio;
 
 class _MockPlayerService extends Mock implements audio.PlayerService {}
 
@@ -32,7 +33,7 @@ void main() {
     playerService = _MockPlayerService();
     when(
       () => playerService.stateStream,
-    ).thenAnswer((_) => const Stream<audio.PlayerState>.empty());
+    ).thenAnswer((_) => const Stream<audio.PlaybackState>.empty());
     when(() => playerService.dispose()).thenAnswer((_) async {});
     when(() => playerService.pause()).thenAnswer((_) async {});
     when(() => playerService.play()).thenAnswer((_) async {});

@@ -9,10 +9,7 @@ import 'recorder_overlay_content.dart';
 class RecorderOverlay extends StatefulWidget {
   final Widget child;
 
-  const RecorderOverlay({
-    required this.child,
-    super.key,
-  });
+  const RecorderOverlay({required this.child, super.key});
 
   @override
   State<RecorderOverlay> createState() => _RecorderOverlayState();
@@ -27,9 +24,7 @@ class _RecorderOverlayState extends State<RecorderOverlay>
     super.initState();
     _controller = AnimationController(
       vsync: this,
-      duration: Duration(
-        milliseconds: 500,
-      ),
+      duration: Duration(milliseconds: 500),
     );
   }
 
@@ -43,11 +38,11 @@ class _RecorderOverlayState extends State<RecorderOverlay>
   Widget build(BuildContext context) {
     return BlocListener<RecorderBloc, RecorderState>(
       listenWhen: (prev, next) {
-        return prev.show != next.show;
+        return prev.overlayVisible != next.overlayVisible;
       },
 
       listener: (context, state) {
-        if (state.show) {
+        if (state.overlayVisible) {
           _controller.forward();
         } else {
           _controller.reverse();
@@ -60,25 +55,16 @@ class _RecorderOverlayState extends State<RecorderOverlay>
             bottom: 0,
             child: IgnorePointer(
               ignoring: true,
-              child: RecorderBackground(
-                animation: _controller,
-              ),
+              child: RecorderBackground(animation: _controller),
             ),
           ),
           Positioned.fill(
             child: IgnorePointer(
               ignoring: true,
-              child: RecorderOverlayContent(
-                animation: _controller,
-              ),
+              child: RecorderOverlayContent(animation: _controller),
             ),
           ),
-          Positioned(
-            bottom: 0,
-            left: 0,
-            right: 0,
-            child: RecordPanel(),
-          ),
+          Positioned(bottom: 0, left: 0, right: 0, child: RecordPanel()),
         ],
       ),
     );
