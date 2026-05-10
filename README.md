@@ -16,9 +16,8 @@ Record short voice notes, save them locally, and manage everything through a cal
 
 ## Demo
 
-Reserved for a short screen recording of the app in use.
+https://github.com/user-attachments/assets/4b8fc35c-53ed-4603-b001-57928af025be
 
-Suggested file location: `docs/media/voice-memos-demo.mp4`
 
 ## Overview
 
