@@ -43,7 +43,7 @@ class RecorderBackgroundClipper extends CustomClipper<Path> {
 
   @override
   Path getClip(Size size) {
-    final Path path = Path();
+    final path = Path();
 
     final offset = size.height * 0.05;
 

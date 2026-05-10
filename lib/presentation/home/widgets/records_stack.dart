@@ -147,7 +147,7 @@ class _RecordsStackState extends State<RecordsStack>
     final base = currentPage.round();
     final desired = projected.round();
     final skip = (desired - base).clamp(-_maxSkip, _maxSkip);
-    int target = (base + skip).clamp(0, _maxPage.toInt());
+    var target = (base + skip).clamp(0, _maxPage.toInt());
 
     if (target == base) {
       final fraction = currentPage - currentPage.floor();
@@ -195,7 +195,7 @@ class _RecordsStackState extends State<RecordsStack>
       widget.itemsCount - 1,
     );
 
-    for (int i = lastVisible; i >= firstVisible; i--) {
+    for (var i = lastVisible; i >= firstVisible; i--) {
       cards.add(_buildItem(i));
     }
 
