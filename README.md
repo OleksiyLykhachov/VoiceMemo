@@ -1,6 +1,6 @@
 <div align="center">
 
-# Voice Memos
+# Voice Memo
 
 ### A minimal Flutter voice recorder for quick local audio notes.
 
